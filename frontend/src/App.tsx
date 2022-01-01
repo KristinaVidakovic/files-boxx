@@ -1,7 +1,7 @@
 import Hero from "./components/Hero";
 
 function App() {
-  console.log(window)
+    console.log(window)
   return (
     <div className="App">
       <Hero />
