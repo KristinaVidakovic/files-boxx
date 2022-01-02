@@ -3,6 +3,7 @@ package com.filesboxx.ws.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,4 +35,14 @@ public class UserController {
 		return new ResponseEntity<User>(responseUser, responseUser != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
 	}
 	
+	@ApiOperation(value = "Method for getting user by user ID.")
+	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = User.class)})
+	@RequestMapping(value = "/{userId}", method = RequestMethod.GET)
+	public ResponseEntity<User> getUser (
+			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable String userId) {
+		
+		User user = userService.getUser(userId);
+		
+		return new ResponseEntity<User>(user, user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+	}
 }

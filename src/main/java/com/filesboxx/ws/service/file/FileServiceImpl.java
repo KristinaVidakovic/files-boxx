@@ -4,13 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,15 +19,14 @@ import com.filesboxx.ws.model.ResponseMessage;
 import com.filesboxx.ws.repository.FileFolderRepository;
 import com.filesboxx.ws.repository.FileRepository;
 import com.filesboxx.ws.repository.FileUserRepository;
+import com.filesboxx.ws.repository.FolderRepository;
+import com.filesboxx.ws.repository.UserRepository;
 
 @Service
 public class FileServiceImpl implements FileService{
 	
 	static Logger log = LoggerFactory.getLogger(FileServiceImpl.class);
 
-	@Autowired
-	private DataSource dataSource;
-	
 	@Autowired
 	private FileRepository fileRepo;
 	
@@ -40,6 +36,12 @@ public class FileServiceImpl implements FileService{
 	@Autowired
 	private FileFolderRepository fileFolderRepo;
 	
+	@Autowired
+	private UserRepository userRepo;
+	
+	@Autowired
+	private FolderRepository folderRepo;
+	
 	@Override
 	public File file(MultipartFile forwarded, String userId) {
 		
@@ -47,7 +49,7 @@ public class FileServiceImpl implements FileService{
 		
 		File file = new File();
 		
-		if (!existsUser(userId)) {
+		if (userRepo.user(userId) == null) {
 			log.error("Forwarded user doesn't exists.");
 			return null;
 		}
@@ -81,7 +83,7 @@ public class FileServiceImpl implements FileService{
 		
 		File file = new File();
 		
-		if (!existsFolder(folderId)) {
+		if (folderRepo.folder(folderId) == null) {
 			log.error("Forwarded folder doesn't exists.");
 			return null;
 		}
@@ -117,7 +119,7 @@ public class FileServiceImpl implements FileService{
 		
 		if (request.getUserId() != null && request.getFolderId() == null) {
 		
-			if (!existsFile(request.getFileId()) || !existsUser(request.getUserId())) {
+			if (fileRepo.file(request.getFileId()) == null || userRepo.user(request.getUserId()) == null) {
 				log.error("File ID or user ID doesn't exists or are deleted.");
 				message.setMessage("Forwarded user ID or file ID doesn't exists or are deleted.");
 				message.setStatus(HttpStatus.BAD_REQUEST);
@@ -142,7 +144,7 @@ public class FileServiceImpl implements FileService{
 			
 		} else {
 			
-			if (!existsFile(request.getFileId()) || !existsFolder(request.getFolderId())) {
+			if (fileRepo.file(request.getFileId()) == null || folderRepo.folder(request.getFolderId()) == null) {
 				log.error("File ID or folder ID doesn't exists or are deleted.");
 				message.setMessage("Forwarded folder ID or file ID doesn't exists or are deleted.");
 				message.setStatus(HttpStatus.BAD_REQUEST);
@@ -174,7 +176,7 @@ public class FileServiceImpl implements FileService{
 		
 		log.info("Called GET method for getting files by user ID.");
 		
-		if (!existsUser(userId)) {
+		if (userRepo.user(userId) == null) {
 			log.error("Forwarded user ID doesn't exists.");
 			return null;
 		}
@@ -204,7 +206,7 @@ public class FileServiceImpl implements FileService{
 		
 		log.info("Called GET method for getting files from folder by user ID.");
 		
-		if (!existsFolder(folderId)) {
+		if (folderRepo.folder(folderId) == null) {
 			log.error("Forwarded folder ID doesn't exists");
 			return null;
 		}
@@ -220,33 +222,6 @@ public class FileServiceImpl implements FileService{
 		log.info("Method for getting files executed.");
 		
 		return files;
-	}
-	
-	private Boolean existsUser(String userId) {
-		
-		final JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-		String sql = String.format("SELECT USER_ID FROM USER WHERE USER_ID = '%s'", userId);
-		List<String> user = jdbcTemplate.queryForList(sql, String.class);
-		
-		return !user.isEmpty();
-	}
-	
-	private Boolean existsFolder(String folderId) {
-		
-		final JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-		String sql = String.format("SELECT FOLDER_ID FROM FOLDER WHERE FOLDER_ID = '%s' AND DELETED = FALSE", folderId);
-		List<String> folder = jdbcTemplate.queryForList(sql, String.class);
-		
-		return !folder.isEmpty();
-	}
-
-	private Boolean existsFile(String fileId) {
-		
-		final JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-		String sql = String.format("SELECT FILE_ID FROM FILE WHERE FILE_ID = '%s' AND DELETED = FALSE", fileId);
-		List<String> file = jdbcTemplate.queryForList(sql, String.class);
-		
-		return !file.isEmpty();
 	}
 
 }

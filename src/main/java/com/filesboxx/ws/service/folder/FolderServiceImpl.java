@@ -3,18 +3,16 @@ package com.filesboxx.ws.service.folder;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.filesboxx.ws.model.BelongsFolderUser;
 import com.filesboxx.ws.model.Folder;
 import com.filesboxx.ws.repository.FolderRepository;
 import com.filesboxx.ws.repository.FolderUserRepository;
+import com.filesboxx.ws.repository.UserRepository;
 
 @Service
 public class FolderServiceImpl implements FolderService {
@@ -22,20 +20,20 @@ public class FolderServiceImpl implements FolderService {
 	static Logger log = LoggerFactory.getLogger(FolderServiceImpl.class);
 	
 	@Autowired
-	private DataSource dataSource;
-	
-	@Autowired
 	private FolderRepository folderRepo;
 	
 	@Autowired
 	private FolderUserRepository folderUserRepo;
+	
+	@Autowired
+	private UserRepository userRepo;
 
 	@Override
 	public Folder folder(Folder folder, String userId) {
 
 		log.info("Called POST method for creating new folder.");
 
-		if (!existsUser(userId)) {
+		if (userRepo.user(userId) == null) {
 			log.error("Forwarded user doesn't exists.");
 			return null;
 		}
@@ -67,7 +65,7 @@ public class FolderServiceImpl implements FolderService {
 		
 		log.info("Called GET method for getting folders for forwarded user ID.");
 		
-		if (!existsUser(userId)) {
+		if (userRepo.user(userId) == null) {
 			log.error("Forwarded user ID doesn't exists or is deleted.");
 			return null;
 		}
@@ -90,15 +88,6 @@ public class FolderServiceImpl implements FolderService {
 		log.info("Method for getting folders executed.");
 		
 		return folders;
-	}
-
-	private Boolean existsUser(String userId) {
-
-		final JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-		String sql = String.format("SELECT USER_ID FROM USER WHERE USER_ID = '%s'", userId);
-		List<String> user = jdbcTemplate.queryForList(sql, String.class);
-
-		return !user.isEmpty();
 	}
 
 }

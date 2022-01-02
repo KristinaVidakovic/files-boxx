@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService{
 	
 	public User user(User user) {
 		
-		log.info("Called method POST /post");
+		log.info("Called POST method for registration new user.");
 		
 		if (user.getFirstName() == null || user.getLastName() == null || user.getUsername() == null || user.getPassword() == null || user.getEmail() == null) {
 			log.error("All attributes must be forwarded.");
@@ -36,6 +36,23 @@ public class UserServiceImpl implements UserService{
 		userRepo.save(user);
 		
 		log.info("New user registered: " + user.toString());
+		
+		return user;
+	}
+
+	@Override
+	public User getUser(String userId) {
+		
+		log.info("Called GET method for getting user by user ID.");
+		
+		if (userRepo.user(userId) == null) {
+			log.error("Forwarded user doesn't exists.");
+			return null;
+		}
+		
+		User user = userRepo.findByUserId(userId);
+		
+		log.info("User : " + user.toString());
 		
 		return user;
 	}
