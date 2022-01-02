@@ -1,4 +1,4 @@
-package com.filesboxx.ws.service;
+package com.filesboxx.ws.service.file;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,29 +16,20 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.filesboxx.ws.model.BelongsFileFolder;
 import com.filesboxx.ws.model.BelongsFileUser;
-import com.filesboxx.ws.model.BelongsFolderUser;
 import com.filesboxx.ws.model.Body;
 import com.filesboxx.ws.model.File;
-import com.filesboxx.ws.model.Folder;
 import com.filesboxx.ws.model.ResponseMessage;
-import com.filesboxx.ws.model.User;
 import com.filesboxx.ws.repository.FileFolderRepository;
 import com.filesboxx.ws.repository.FileRepository;
 import com.filesboxx.ws.repository.FileUserRepository;
-import com.filesboxx.ws.repository.FolderRepository;
-import com.filesboxx.ws.repository.FolderUserRepository;
-import com.filesboxx.ws.repository.UserRepository;
 
 @Service
-public class FilesBoxxServiceImpl implements FilesBoxxService{
-
-	static Logger log = LoggerFactory.getLogger(FilesBoxxServiceImpl.class);
+public class FileServiceImpl implements FileService{
 	
+	static Logger log = LoggerFactory.getLogger(FileServiceImpl.class);
+
 	@Autowired
 	private DataSource dataSource;
-	
-	@Autowired
-	private UserRepository userRepo;
 	
 	@Autowired
 	private FileRepository fileRepo;
@@ -47,37 +38,9 @@ public class FilesBoxxServiceImpl implements FilesBoxxService{
 	private FileUserRepository fileUserRepo;
 	
 	@Autowired
-	private FolderRepository folderRepo;
-	
-	@Autowired
-	private FolderUserRepository folderUserRepo;
-	
-	@Autowired
 	private FileFolderRepository fileFolderRepo;
 	
-	public User user(User user) {
-		
-		log.info("Called method POST /post");
-		
-		if (user.getFirstName() == null || user.getLastName() == null || user.getUsername() == null || user.getPassword() == null || user.getEmail() == null) {
-			log.error("All attributes must be forwarded.");
-			return null;
-		}
-		
-		User exist = userRepo.findByUsername(user.getUsername());
-		
-		if (exist != null) {
-			log.error("User with forwarded username already exists.");
-			return null;
-		}
-		
-		userRepo.save(user);
-		
-		log.info("New user registered: " + user.toString());
-		
-		return user;
-	}
-
+	@Override
 	public File file(MultipartFile forwarded, String userId) {
 		
 		log.info("Called POST method for inserting new file.");
@@ -111,6 +74,7 @@ public class FilesBoxxServiceImpl implements FilesBoxxService{
 		return file;
 	}
 	
+	@Override
 	public File fileFolder(MultipartFile forwarded, String folderId) {
 		
 		log.info("Called POST method for inserting new file.");
@@ -144,37 +108,7 @@ public class FilesBoxxServiceImpl implements FilesBoxxService{
 		return file;
 	}
 	
-	public Folder folder(Folder folder, String userId) {
-		
-		log.info("Called POST method for creating new folder.");
-		
-		if (!existsUser(userId)) {
-			log.error("Forwarded user doesn't exists.");
-			return null;
-		}
-		
-		Folder exists = folderRepo.findByName(folder.getName());
-		
-		if (exists != null) {
-			log.error("Folder with forwarded name already exists.");
-			return null;
-		}
-		
-		folder.setDeleted(false);
-		folderRepo.save(folder);
-		
-		log.info("Created folder: " + folder.toString());
-		
-		BelongsFolderUser belongs = new BelongsFolderUser();
-		belongs.setFolderId(folder.getFolderId());
-		belongs.setUserId(userId);
-		belongs.setDeleted(false);
-		folderUserRepo.save(belongs);
-		log.info("Inserted connection folder-user: " + belongs.toString());
-		
-		return folder;
-	}
-	
+	@Override
 	public ResponseMessage updateLocation(Body request) {
 		
 		log.info("Called PUT method for file location update.");
@@ -235,6 +169,7 @@ public class FilesBoxxServiceImpl implements FilesBoxxService{
 		
 	}
 	
+	@Override
 	public List<File> files(String userId) {
 		
 		log.info("Called GET method for getting files by user ID.");
@@ -251,7 +186,7 @@ public class FilesBoxxServiceImpl implements FilesBoxxService{
 			return null;
 		} 
 		
-		List<File> files = new ArrayList<>();
+		List<File> files = new ArrayList<File>();
 		
 		for (BelongsFileUser bfu : belongs) {
 			if (bfu.getDeleted() == false && fileRepo.findByFileId(bfu.getFileId()).getDeleted() == false) {
@@ -262,36 +197,6 @@ public class FilesBoxxServiceImpl implements FilesBoxxService{
 		log.info("Successfully executet GET method.");
 		
 		return files;
-	}
-	
-	@Override
-	public List<Folder> folders(String userId) {
-		
-		log.info("Called GET method for getting folders for forwarded user ID.");
-		
-		if (!existsUser(userId)) {
-			log.error("Forwarded user ID doesn't exists or is deleted.");
-			return null;
-		}
-
-		List<Folder> folders = new ArrayList<>();
-		
-		List<BelongsFolderUser> belongs = folderUserRepo.findByUserId(userId);
-		
-		if (belongs.isEmpty()) {
-			log.info("Forwarded user doesn't have folders.");
-			return folders;
-		}
-		
-		for (BelongsFolderUser bfu : belongs) {
-			String folderId = bfu.getFolderId();
-			Folder folder = folderRepo.findByFolderId(folderId);
-			folders.add(folder);
-		}
-		
-		log.info("Method for getting folders executed.");
-		
-		return folders;
 	}
 	
 	@Override
@@ -325,7 +230,7 @@ public class FilesBoxxServiceImpl implements FilesBoxxService{
 		
 		return !user.isEmpty();
 	}
-
+	
 	private Boolean existsFolder(String folderId) {
 		
 		final JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
@@ -343,11 +248,5 @@ public class FilesBoxxServiceImpl implements FilesBoxxService{
 		
 		return !file.isEmpty();
 	}
-
-	
-
-	
-
-	
 
 }
