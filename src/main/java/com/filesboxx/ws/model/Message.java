@@ -17,7 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 @Entity
-@Table(name = "MESSAGE", schema = "root")
+@Table(name = "MESSAGE")
 public class Message {
 
 	@Id

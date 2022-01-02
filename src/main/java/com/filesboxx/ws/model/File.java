@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 @Entity
-@Table(name = "FILE", schema = "root")
+@Table(name = "FILE")
 public class File {
 
 	@Id

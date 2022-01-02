@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 @Entity
-@Table(name = "BELONGS_FILE_FOLDER", schema = "root")
+@Table(name = "BELONGS_FILE_FOLDER")
 public class BelongsFileFolder {
 
 	@Id

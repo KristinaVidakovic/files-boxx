@@ -12,7 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 @Entity
-@Table(name = "CHAT", schema = "root")
+@Table(name = "CHAT")
 public class Chat {
 
 	@Id

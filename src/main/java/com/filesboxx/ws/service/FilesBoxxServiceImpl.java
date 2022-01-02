@@ -3,7 +3,6 @@ package com.filesboxx.ws.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -60,12 +59,12 @@ public class FilesBoxxServiceImpl implements FilesBoxxService{
 		
 		log.info("Called method POST /post");
 		
-		if (user.getName() == null || user.getSurname() == null || user.getUserName() == null || user.getPassword() == null) {
+		if (user.getFirstName() == null || user.getLastName() == null || user.getUsername() == null || user.getPassword() == null || user.getEmail() == null) {
 			log.error("All attributes must be forwarded.");
 			return null;
 		}
 		
-		User exist = userRepo.findByUserName(user.getUserName());
+		User exist = userRepo.findByUsername(user.getUsername());
 		
 		if (exist != null) {
 			log.error("User with forwarded username already exists.");
