@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.filesboxx.ws.model.Body;
 import com.filesboxx.ws.model.File;
+import com.filesboxx.ws.model.OneOfFile;
 import com.filesboxx.ws.model.ResponseMessage;
 import com.filesboxx.ws.service.file.FileService;
 
@@ -30,31 +31,36 @@ public class FileController {
 	private FileService fileService;
 	
 	@ApiOperation(value = "Method for inserting new file, outside the folder, by user ID.")
-	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = File.class)})
+	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = File.class),
+					@ApiResponse(code = 400, message = "BAD_REQUEST", response = ResponseMessage.class),
+					@ApiResponse(code = 500, message = "INTERNAL_SERVER_ERROR", response = ResponseMessage.class)})
 	@RequestMapping(value = "/file/{userId}", method = RequestMethod.POST)
-	public ResponseEntity<File> file(
+	public ResponseEntity<OneOfFile> file(
 			@ApiParam(value = "Represents the file which should be inserted.", required = true) @RequestBody MultipartFile file, 
 			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable String userId){
 		
-		File responseFile = fileService.file(file, userId);
+		OneOfFile responseFile = fileService.file(file, userId);
 		
-		return new ResponseEntity<File>(responseFile, responseFile != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<OneOfFile>(responseFile, responseFile instanceof File ? HttpStatus.OK : ((ResponseMessage)responseFile).getStatus());
 	}
 	
 	@ApiOperation(value = "Method for inserting new file, inside the folder, by folder ID.")
-	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = File.class)})
+	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = File.class),
+					@ApiResponse(code = 400, message = "BAD_REQUEST", response = ResponseMessage.class),
+					@ApiResponse(code = 500, message = "INTERNAL_SERVER_ERROR", response = ResponseMessage.class)})
 	@RequestMapping(value = "/file-folder/{folderId}", method = RequestMethod.POST)
-	public ResponseEntity<File> fileFolder(
+	public ResponseEntity<OneOfFile> fileFolder(
 			@ApiParam(value = "Represents the file which should be inserted.", required = true) @RequestBody MultipartFile file, 
 			@ApiParam(value = "Value representing the unique folder identificator.", required = true) @PathVariable String folderId){
 		
-		File responseFile = fileService.fileFolder(file, folderId);
+		OneOfFile responseFile = fileService.fileFolder(file, folderId);
 		
-		return new ResponseEntity<File>(responseFile, responseFile != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<OneOfFile>(responseFile, responseFile instanceof File ? HttpStatus.OK : ((ResponseMessage)responseFile).getStatus());
 	}
 	
 	@ApiOperation(value = "Method for change the location of the file.")
-	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = ResponseMessage.class)})
+	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = ResponseMessage.class),
+					@ApiResponse(code = 400, message = "BAD_REQUEST", response = ResponseMessage.class)})
 	@RequestMapping(value = "change-location", method = RequestMethod.PUT)
 	public ResponseEntity<ResponseMessage> updateLocation(
 			@ApiParam(value = "JSON object representing change location request.", required = true) @RequestBody Body request) {
@@ -65,26 +71,28 @@ public class FileController {
 	}
 	
 	@ApiOperation(value = "Method for getting files, outside the folders, by user ID.")
-	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = File[].class)})
+	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = File[].class),
+					@ApiResponse(code = 204, message = "NO_CONTENT", response = ResponseMessage[].class),
+					@ApiResponse(code = 400, message = "BAD_REQUEST", response = ResponseMessage[].class)})
 	@RequestMapping(value = "/{userId}", method = RequestMethod.GET)
-	public ResponseEntity<List<File>> files (
+	public ResponseEntity<List<OneOfFile>> files (
 			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable String userId) {
 		
-		List<File> files = fileService.files(userId);
+		List<OneOfFile> files = fileService.files(userId);
 		
-		return files == null ? new ResponseEntity<List<File>>(files, HttpStatus.BAD_REQUEST) 
-				: new ResponseEntity<List<File>>(files, !files.isEmpty() ? HttpStatus.OK : HttpStatus.NO_CONTENT);
+		return files.get(0) instanceof File ? new ResponseEntity<List<OneOfFile>>(files, HttpStatus.OK) 
+				: new ResponseEntity<List<OneOfFile>>(files, ((ResponseMessage)files.get(0)).getStatus());
 	}
 	
 	@ApiOperation(value = "Method for getting files from specific folder.")
-	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = File[].class)})
+	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = File[].class),
+					@ApiResponse(code = 400, message = "BAD_REQUEST", response = ResponseMessage[].class)})
 	@RequestMapping(value = "files-folder/{folderId}", method = RequestMethod.GET)
-	public ResponseEntity<List<File>> filesFolder(
+	public ResponseEntity<List<OneOfFile>> filesFolder(
 			@ApiParam(value = "Value representing the unique folder identificator.", required = true) @PathVariable String folderId) {
 		
-		List<File> files = fileService.filesFolder(folderId);
+		List<OneOfFile> files = fileService.filesFolder(folderId);
 		
-		return files == null ? new ResponseEntity<List<File>>(files, HttpStatus.BAD_REQUEST) 
-				: new ResponseEntity<List<File>>(files, !files.isEmpty() ? HttpStatus.OK : HttpStatus.NO_CONTENT);
+		return new ResponseEntity<List<OneOfFile>>(files, files.get(0) instanceof File ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
 	}
 }

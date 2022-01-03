@@ -15,6 +15,7 @@ import com.filesboxx.ws.model.BelongsFileFolder;
 import com.filesboxx.ws.model.BelongsFileUser;
 import com.filesboxx.ws.model.Body;
 import com.filesboxx.ws.model.File;
+import com.filesboxx.ws.model.OneOfFile;
 import com.filesboxx.ws.model.ResponseMessage;
 import com.filesboxx.ws.repository.FileFolderRepository;
 import com.filesboxx.ws.repository.FileRepository;
@@ -43,15 +44,19 @@ public class FileServiceImpl implements FileService{
 	private FolderRepository folderRepo;
 	
 	@Override
-	public File file(MultipartFile forwarded, String userId) {
+	public OneOfFile file(MultipartFile forwarded, String userId) {
 		
 		log.info("Called POST method for inserting new file.");
+		
+		ResponseMessage message = new ResponseMessage();
 		
 		File file = new File();
 		
 		if (userRepo.user(userId) == null) {
 			log.error("Forwarded user doesn't exists.");
-			return null;
+			message.setMessage("Forwarded user doesn't exists.");
+			message.setStatus(HttpStatus.BAD_REQUEST);
+			return message;
 		}
 		
 		file.setName(forwarded.getOriginalFilename());
@@ -59,7 +64,10 @@ public class FileServiceImpl implements FileService{
 			file.setData(forwarded.getBytes());
 		} catch (IOException e) {
 			log.error("Error getting bytes from forwarded file.");
+			message.setMessage("Error getting bytes from forwarded file.");
+			message.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
 			e.printStackTrace();
+			return message;
 		}
 		
 		file.setDeleted(false);
@@ -77,15 +85,19 @@ public class FileServiceImpl implements FileService{
 	}
 	
 	@Override
-	public File fileFolder(MultipartFile forwarded, String folderId) {
+	public OneOfFile fileFolder(MultipartFile forwarded, String folderId) {
 		
 		log.info("Called POST method for inserting new file.");
+		
+		ResponseMessage message = new ResponseMessage();
 		
 		File file = new File();
 		
 		if (folderRepo.folder(folderId) == null) {
 			log.error("Forwarded folder doesn't exists.");
-			return null;
+			message.setMessage("Forwarded folder doesn't exists.");
+			message.setStatus(HttpStatus.BAD_REQUEST);
+			return message;
 		}
 		
 		file.setName(forwarded.getOriginalFilename());
@@ -93,7 +105,10 @@ public class FileServiceImpl implements FileService{
 			file.setData(forwarded.getBytes());
 		} catch (IOException e) {
 			log.error("Error getting bytes from forwarded file.");
+			message.setMessage("Error getting bytes from forwarded file.");
+			message.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
 			e.printStackTrace();
+			return message;
 		}
 		
 		file.setDeleted(false);
@@ -172,56 +187,68 @@ public class FileServiceImpl implements FileService{
 	}
 	
 	@Override
-	public List<File> files(String userId) {
+	public List<OneOfFile> files(String userId) {
 		
 		log.info("Called GET method for getting files by user ID.");
 		
+		ResponseMessage message = new ResponseMessage();
+		List<OneOfFile> list = new ArrayList<>();
+		
 		if (userRepo.user(userId) == null) {
 			log.error("Forwarded user ID doesn't exists.");
-			return null;
+			message.setMessage("Forwarded user ID doesn't exists.");
+			message.setStatus(HttpStatus.BAD_REQUEST);
+			list.add(message);
+			return list;
 		}
 		
 		List<BelongsFileUser> belongs = fileUserRepo.findByUserId(userId);
 		
 		if (belongs.isEmpty()) {
 			log.error("Doesn't exists files for forwarded user ID.");
-			return null;
+			message.setMessage("Doesn't exists files for forwarded user ID.");
+			message.setStatus(HttpStatus.NO_CONTENT);
+			list.add(message);
+			return list;
 		} 
 		
-		List<File> files = new ArrayList<File>();
 		
 		for (BelongsFileUser bfu : belongs) {
 			if (bfu.getDeleted() == false && fileRepo.findByFileId(bfu.getFileId()).getDeleted() == false) {
-				files.add(fileRepo.findByFileId(bfu.getFileId()));
+				list.add(fileRepo.findByFileId(bfu.getFileId()));
 			}
 		}
 		
 		log.info("Successfully executet GET method.");
 		
-		return files;
+		return list;
 	}
 	
 	@Override
-	public List<File> filesFolder(String folderId) {
+	public List<OneOfFile> filesFolder(String folderId) {
 		
 		log.info("Called GET method for getting files from folder by user ID.");
 		
-		if (folderRepo.folder(folderId) == null) {
-			log.error("Forwarded folder ID doesn't exists");
-			return null;
-		}
+		ResponseMessage message = new ResponseMessage();
+		List<OneOfFile> list = new ArrayList<>();
 		
-		List<File> files = new ArrayList<>();
+		if (folderRepo.folder(folderId) == null) {
+			log.error("Forwarded folder ID doesn't exists.");
+			message.setMessage("Forwarded folder ID doesn't exists.");
+			message.setStatus(HttpStatus.BAD_REQUEST);
+			list.add(message);
+			return list;
+		}
 		
 		List<BelongsFileFolder> belongsFiles = fileFolderRepo.findByFolderId(folderId);
 		
 		for (BelongsFileFolder bff: belongsFiles) {
-			files.add(fileRepo.findByFileId(bff.getFileId()));
+			list.add(fileRepo.findByFileId(bff.getFileId()));
 		}
 		
 		log.info("Method for getting files executed.");
 		
-		return files;
+		return list;
 	}
 
 }

@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.filesboxx.ws.model.BodySignIn;
+import com.filesboxx.ws.model.OneOfUser;
+import com.filesboxx.ws.model.ResponseMessage;
 import com.filesboxx.ws.model.User;
 import com.filesboxx.ws.service.user.UserService;
 
@@ -18,31 +21,44 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
-@RequestMapping("users")
 public class UserController {
 
 	@Autowired
 	private UserService userService;
 	
 	@ApiOperation(value = "Method for registration new user.")
-	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = User.class)})
-	@RequestMapping(value = "", method = RequestMethod.POST)
-	public ResponseEntity<User> user(
+	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = User.class),
+					@ApiResponse(code = 400, message = "BAD_REQUEST", response = ResponseMessage.class)})
+	@RequestMapping(value = "auth/signup", method = RequestMethod.POST)
+	public ResponseEntity<OneOfUser> user(
 			@ApiParam(value = "A JSON object representing the user.", required = true) @RequestBody User user){
 		
-		User responseUser = userService.user(user);
+		OneOfUser responseUser = userService.user(user);
 		
-		return new ResponseEntity<User>(responseUser, responseUser != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<OneOfUser>(responseUser, responseUser instanceof User ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
 	}
 	
 	@ApiOperation(value = "Method for getting user by user ID.")
-	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = User.class)})
-	@RequestMapping(value = "/{userId}", method = RequestMethod.GET)
-	public ResponseEntity<User> getUser (
+	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = User.class),
+					@ApiResponse(code = 400, message = "BAD_REQUEST", response = ResponseMessage.class)})
+	@RequestMapping(value = "user/{userId}", method = RequestMethod.GET)
+	public ResponseEntity<OneOfUser> getUser (
 			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable String userId) {
 		
-		User user = userService.getUser(userId);
+		OneOfUser user = userService.getUserByUserId(userId);
 		
-		return new ResponseEntity<User>(user, user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<OneOfUser>(user, user instanceof User ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+	}
+	
+	@ApiOperation(value = "Method for getting user by username and password.")
+	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = User.class),
+					@ApiResponse(code = 400, message = "BAD_REQUEST", response = ResponseMessage.class)})
+	@RequestMapping(value = "auth/signin", method = RequestMethod.POST)
+	public ResponseEntity<OneOfUser> getUser (
+			@ApiParam(value = "Object representing the user's credentials.", required = true) @RequestBody BodySignIn body) {
+		
+		OneOfUser user = userService.getUserSignIn(body);
+		
+		return new ResponseEntity<OneOfUser>(user, user instanceof User ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
 	}
 }

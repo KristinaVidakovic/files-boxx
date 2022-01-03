@@ -6,10 +6,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.filesboxx.ws.model.BelongsFolderUser;
 import com.filesboxx.ws.model.Folder;
+import com.filesboxx.ws.model.OneOfFolder;
+import com.filesboxx.ws.model.ResponseMessage;
 import com.filesboxx.ws.repository.FolderRepository;
 import com.filesboxx.ws.repository.FolderUserRepository;
 import com.filesboxx.ws.repository.UserRepository;
@@ -29,19 +32,25 @@ public class FolderServiceImpl implements FolderService {
 	private UserRepository userRepo;
 
 	@Override
-	public Folder folder(Folder folder, String userId) {
+	public OneOfFolder folder(Folder folder, String userId) {
 
 		log.info("Called POST method for creating new folder.");
+		
+		ResponseMessage message = new ResponseMessage();
 
 		if (userRepo.user(userId) == null) {
 			log.error("Forwarded user doesn't exists.");
-			return null;
+			message.setMessage("Forwarded user doesn't exists.");
+			message.setStatus(HttpStatus.BAD_REQUEST);
+			return message;
 		}
 
 		Folder exists = folderRepo.findByName(folder.getName());
 
 		if (exists != null) {
 			log.error("Folder with forwarded name already exists.");
+			message.setMessage("Folder with forwarded name already exists.");
+			message.setStatus(HttpStatus.BAD_REQUEST);
 			return null;
 		}
 
@@ -61,33 +70,40 @@ public class FolderServiceImpl implements FolderService {
 	}
 	
 	@Override
-	public List<Folder> folders(String userId) {
+	public List<OneOfFolder> folders(String userId) {
 		
 		log.info("Called GET method for getting folders for forwarded user ID.");
 		
+		ResponseMessage message =  new ResponseMessage();
+		List<OneOfFolder> list = new ArrayList<>();
+		
 		if (userRepo.user(userId) == null) {
 			log.error("Forwarded user ID doesn't exists or is deleted.");
-			return null;
+			message.setMessage("Forwarded user ID doesn't exists or is deleted.");
+			message.setStatus(HttpStatus.BAD_REQUEST);
+			list.add(message);
+			return list;
 		}
-
-		List<Folder> folders = new ArrayList<>();
 		
 		List<BelongsFolderUser> belongs = folderUserRepo.findByUserId(userId);
 		
 		if (belongs.isEmpty()) {
 			log.info("Forwarded user doesn't have folders.");
-			return folders;
+			message.setMessage("Forwarded user doesn't have folders.");
+			message.setStatus(HttpStatus.NO_CONTENT);
+			list.add(message);
+			return list;
 		}
 		
 		for (BelongsFolderUser bfu : belongs) {
 			String folderId = bfu.getFolderId();
 			Folder folder = folderRepo.findByFolderId(folderId);
-			folders.add(folder);
+			list.add(folder);
 		}
 		
 		log.info("Method for getting folders executed.");
 		
-		return folders;
+		return list;
 	}
 
 }

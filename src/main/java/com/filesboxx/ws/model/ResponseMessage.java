@@ -5,9 +5,13 @@ import org.springframework.http.HttpStatus;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class ResponseMessage {
+import io.swagger.annotations.ApiModelProperty;
 
+public class ResponseMessage implements OneOfUser, OneOfFolder, OneOfFile{
+
+	@ApiModelProperty(example = "Forwarded object doesn't exists.")
 	private String message;
+	@ApiModelProperty(example = "BAD_REQUEST/NO_CONTENT/OK")
 	private HttpStatus status;
 	
 	public ResponseMessage() {

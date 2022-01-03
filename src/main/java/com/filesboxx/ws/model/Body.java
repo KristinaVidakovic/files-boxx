@@ -3,10 +3,15 @@ package com.filesboxx.ws.model;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class Body {
 
+	@ApiModelProperty(example = "cb61913d-d44f-4378-9488-5bcda7e2dbbb")
 	private String fileId;
+	@ApiModelProperty(example = "11e06451-5fb8-46c4-9050-5c5f605320c6")
 	private String folderId;
+	@ApiModelProperty(example = "null")
 	private String userId;
 	
 	public Body() {

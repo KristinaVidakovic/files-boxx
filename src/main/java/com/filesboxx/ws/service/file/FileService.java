@@ -6,17 +6,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.filesboxx.ws.model.Body;
 import com.filesboxx.ws.model.File;
+import com.filesboxx.ws.model.OneOfFile;
 import com.filesboxx.ws.model.ResponseMessage;
 
 public interface FileService {
 
-	File file(MultipartFile file, String userId);
+	OneOfFile file(MultipartFile file, String userId);
 	
-	File fileFolder(MultipartFile file, String folderId);
+	OneOfFile fileFolder(MultipartFile file, String folderId);
 	
 	ResponseMessage updateLocation(Body request);
 	
-	List<File> files(String userId);
+	List<OneOfFile> files(String userId);
 	
-	List<File> filesFolder(String folderId);
+	List<OneOfFile> filesFolder(String folderId);
 }

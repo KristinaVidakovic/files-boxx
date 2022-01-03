@@ -11,17 +11,22 @@ import org.hibernate.annotations.GenericGenerator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 @Table(name = "FOLDER")
-public class Folder {
+public class Folder implements OneOfFolder{
 
 	@Id
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@ApiModelProperty(example = "11e06451-5fb8-46c4-9050-5c5f605320c6")
 	@Column(name = "FOLDER_ID")
 	private String folderId;
+	@ApiModelProperty(example = "New folder")
 	@Column(name = "NAME")
 	private String name;
+	@ApiModelProperty(example = "false")
 	@Column(name = "DELETED")
 	private Boolean deleted;
 	

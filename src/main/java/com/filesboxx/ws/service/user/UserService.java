@@ -1,10 +1,14 @@
 package com.filesboxx.ws.service.user;
 
+import com.filesboxx.ws.model.BodySignIn;
+import com.filesboxx.ws.model.OneOfUser;
 import com.filesboxx.ws.model.User;
 
 public interface UserService {
 
-	User user(User user);
+	OneOfUser user(User user);
 	
-	User getUser(String userId);
+	OneOfUser getUserByUserId(String userId);
+	
+	OneOfUser getUserSignIn(BodySignIn body);
 }

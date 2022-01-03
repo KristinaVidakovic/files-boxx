@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.filesboxx.ws.model.Folder;
+import com.filesboxx.ws.model.OneOfFolder;
+import com.filesboxx.ws.model.ResponseMessage;
 import com.filesboxx.ws.service.folder.FolderService;
 
 import io.swagger.annotations.ApiOperation;
@@ -27,26 +29,29 @@ public class FolderController {
 	private FolderService folderService;
 	
 	@ApiOperation(value = "Method for inserting new folder, by user ID.")
-	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = Folder.class)})
+	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = Folder.class),
+					@ApiResponse(code = 400, message = "BAD_REQUEST", response = ResponseMessage.class)})
 	@RequestMapping(value = "folder/{userId}", method = RequestMethod.POST)
-	public ResponseEntity<Folder> folder(
+	public ResponseEntity<OneOfFolder> folder(
 			@ApiParam(value = "JSON object representing the folder.", required = true) @RequestBody Folder folder, 
 			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable String userId){
 		
-		Folder responseFolder = folderService.folder(folder, userId);
+		OneOfFolder responseFolder = folderService.folder(folder, userId);
 		
-		return new ResponseEntity<Folder>(responseFolder, responseFolder != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<OneOfFolder>(responseFolder, responseFolder instanceof Folder ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
 	}
 	
 	@ApiOperation(value = "Method for getting list of folders by user ID.")
-	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = Folder[].class)})
+	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = Folder[].class),
+					@ApiResponse(code = 204, message = "NO_CONTENT", response = ResponseMessage[].class),
+					@ApiResponse(code = 400, message = "BAD_REQUEST", response = ResponseMessage[].class)})
 	@RequestMapping(value = "/{userId}", method = RequestMethod.GET)
-	public ResponseEntity<List<Folder>> folders (
+	public ResponseEntity<List<OneOfFolder>> folders (
 			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable String userId) {
 		
-		List<Folder> folders = folderService.folders(userId);
+		List<OneOfFolder> folders = folderService.folders(userId);
 		
-		return folders == null ? new ResponseEntity<List<Folder>>(folders, HttpStatus.BAD_REQUEST) 
-				: new ResponseEntity<List<Folder>>(folders, !folders.isEmpty() ? HttpStatus.OK : HttpStatus.NO_CONTENT);
+		return folders.get(0) instanceof Folder ? new ResponseEntity<List<OneOfFolder>>(folders, HttpStatus.OK) 
+				: new ResponseEntity<List<OneOfFolder>>(folders, ((ResponseMessage)folders.get(0)).getStatus());
 	}
 }

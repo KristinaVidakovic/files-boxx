@@ -12,20 +12,25 @@ import org.hibernate.annotations.GenericGenerator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 @Table(name = "FILE")
-public class File {
+public class File implements OneOfFile{
 
 	@Id
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@ApiModelProperty(example = "cb61913d-d44f-4378-9488-5bcda7e2dbbb")
 	@Column(name = "FILE_ID")
 	private String fileId;
+	@ApiModelProperty(example = "FilesBoxx - servisi.xlsx", hidden = false)
 	@Column(name = "NAME")
 	private String name;
 	@Column(name = "DATA")
 	@Lob
 	private byte[] data;
+	@ApiModelProperty(example = "false")
 	@Column(name = "DELETED")
 	private Boolean deleted;
 	
