@@ -1,3 +1,3 @@
 # Files Boxx API
 
-### :frowning_woman: List of implemented methods:
+### 🗃️ List of implemented methods:
