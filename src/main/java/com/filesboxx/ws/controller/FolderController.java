@@ -54,4 +54,16 @@ public class FolderController {
 		return folders.get(0) instanceof Folder ? new ResponseEntity<List<OneOfFolder>>(folders, HttpStatus.OK) 
 				: new ResponseEntity<List<OneOfFolder>>(folders, ((ResponseMessage)folders.get(0)).getStatus());
 	}
+
+	@ApiOperation(value = "Method for deleting folder by folder ID.")
+	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = ResponseMessage.class),
+			@ApiResponse(code = 400, message = "BAD_REQUEST", response = ResponseMessage.class)})
+	@RequestMapping(value = "delete/{folderId}", method = RequestMethod.DELETE)
+	public ResponseEntity<ResponseMessage> delete(
+			@ApiParam(value = "Value representing the unique folder identificator.", required = true) @PathVariable String folderId) {
+
+		ResponseMessage message = folderService.deleteFolder(folderId);
+
+		return new ResponseEntity<ResponseMessage>(message, message.getStatus());
+	}
 }

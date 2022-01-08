@@ -20,4 +20,6 @@ public interface FileService {
 	List<OneOfFile> files(String userId);
 	
 	List<OneOfFile> filesFolder(String folderId);
+
+	ResponseMessage deleteFile(String fileId);
 }

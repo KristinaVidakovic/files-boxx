@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,10 +24,15 @@ import com.filesboxx.ws.repository.FileUserRepository;
 import com.filesboxx.ws.repository.FolderRepository;
 import com.filesboxx.ws.repository.UserRepository;
 
+import javax.sql.DataSource;
+
 @Service
 public class FileServiceImpl implements FileService{
 	
 	static Logger log = LoggerFactory.getLogger(FileServiceImpl.class);
+
+	@Autowired
+	private DataSource dataSource;
 
 	@Autowired
 	private FileRepository fileRepo;
@@ -249,6 +255,46 @@ public class FileServiceImpl implements FileService{
 		log.info("Method for getting files executed.");
 		
 		return list;
+	}
+
+	@Override
+	public ResponseMessage deleteFile(String fileId) {
+
+		log.info("Called DELETE method for deleting file by file ID.");
+
+		ResponseMessage message = new ResponseMessage();
+
+		if (fileRepo.file(fileId) == null) {
+			log.error("File with forwarded file ID doesn't exists or is deleted.");
+			message.setMessage("File with forwarded file ID doesn't exists or is deleted.");
+			message.setStatus(HttpStatus.BAD_REQUEST);
+			return message;
+		}
+
+		File file = fileRepo.findByFileId(fileId);
+
+		BelongsFileFolder bff = fileFolderRepo.findByFileId(fileId);
+		if (bff != null) {
+			bff.setDeleted(true);
+			fileFolderRepo.save(bff);
+			log.info("Belongs file folder deleted: " + bff.toString());
+		}
+		BelongsFileUser bfu = fileUserRepo.findByFileId(fileId);
+		if (bfu != null) {
+			bfu.setDeleted(true);
+			fileUserRepo.save(bfu);
+			log.info("Belongs file user deleted: " + bfu.toString());
+		}
+
+		file.setDeleted(true);
+		fileRepo.save(file);
+
+		log.info("File deleted.");
+
+		message.setMessage("File deleted.");
+		message.setStatus(HttpStatus.OK);
+
+		return message;
 	}
 
 }

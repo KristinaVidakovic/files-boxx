@@ -11,4 +11,6 @@ import com.filesboxx.ws.model.BelongsFolderUser;
 public interface FolderUserRepository extends JpaRepository<BelongsFolderUser, String>{
 
 	List<BelongsFolderUser> findByUserId(String userId);
+
+	BelongsFolderUser findByFolderId(String folderId);
 }

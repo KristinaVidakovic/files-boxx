@@ -95,4 +95,16 @@ public class FileController {
 		
 		return new ResponseEntity<List<OneOfFile>>(files, files.get(0) instanceof File ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
 	}
+
+	@ApiOperation(value = "Method for deleting file by file ID.")
+	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = ResponseMessage.class),
+			@ApiResponse(code = 400, message = "BAD_REQUEST", response = ResponseMessage.class)})
+	@RequestMapping(value = "delete/{fileId}", method = RequestMethod.DELETE)
+	public ResponseEntity<ResponseMessage> delete(
+			@ApiParam(value = "Value representing the unique file identificator.", required = true) @PathVariable String fileId) {
+
+		ResponseMessage message = fileService.deleteFile(fileId);
+
+		return new ResponseEntity<ResponseMessage>(message, message.getStatus());
+	}
 }

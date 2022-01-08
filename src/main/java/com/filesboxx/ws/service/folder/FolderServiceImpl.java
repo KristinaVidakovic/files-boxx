@@ -106,4 +106,37 @@ public class FolderServiceImpl implements FolderService {
 		return list;
 	}
 
+	@Override
+	public ResponseMessage deleteFolder(String folderId) {
+
+		log.info("Called DELETE method for deleting folder by folder ID.");
+
+		ResponseMessage message = new ResponseMessage();
+
+		if (folderRepo.folder(folderId) == null) {
+			log.error("Folder with forwarded folder ID doesn't exists or is deleted.");
+			message.setMessage("Folder with forwarded folder ID doesn't exists or is deleted.");
+			message.setStatus(HttpStatus.BAD_REQUEST);
+			return message;
+		}
+
+		BelongsFolderUser bfu = folderUserRepo.findByFolderId(folderId);
+		if (bfu != null) {
+			bfu.setDeleted(true);
+			folderUserRepo.save(bfu);
+			log.info("Belongs folder user: " + bfu.toString());
+		}
+
+		Folder folder = folderRepo.findByFolderId(folderId);
+		folder.setDeleted(true);
+		folderRepo.save(folder);
+
+		log.info("Folder deleted.");
+
+		message.setMessage("Folder deleted.");
+		message.setStatus(HttpStatus.OK);
+
+		return message;
+	}
+
 }
