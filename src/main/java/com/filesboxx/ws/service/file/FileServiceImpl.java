@@ -173,15 +173,23 @@ public class FileServiceImpl implements FileService{
 			}
 			
 			BelongsFileUser bfu = fileUserRepo.findByFileId(request.getFileId());
+			if(bfu == null) {
+				BelongsFileFolder bff = fileFolderRepo.findByFileId(request.getFileId());
+				bff.setDeleted(true);
+				fileFolderRepo.save(bff);
+				log.info("Connection file-user updated: " + bff.toString());
+			} else {
+				bfu.setDeleted(true);
+				fileUserRepo.save(bfu);
+				log.info("Connection file-user updated: " + bfu.toString());
+			}
 			BelongsFileFolder bff = new BelongsFileFolder();
 			bff.setFileId(request.getFileId());
 			bff.setFolderId(request.getFolderId());
 			bff.setDeleted(false);
 			fileFolderRepo.save(bff);
 			log.info("Connection file-folder added: " + bff.toString());
-			bfu.setDeleted(true);
-			fileUserRepo.save(bfu);
-			log.info("Connection file-user updated: " + bfu.toString());
+
 			message.setStatus(HttpStatus.OK);
 			message.setMessage("Successfully changed file location.");
 			
