@@ -44,14 +44,11 @@ public class Notification {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Notification(String notificationId, String userId, String text, String title, Timestamp dateTime, Boolean seen) {
+	public Notification(String notificationId, String userId, String text) {
 		super();
 		this.notificationId = notificationId;
 		this.userId = userId;
 		this.text = text;
-		this.title = title;
-		this.dateTime = dateTime;
-		this.seen = seen;
 	}
 
 	public String getNotificationId() {

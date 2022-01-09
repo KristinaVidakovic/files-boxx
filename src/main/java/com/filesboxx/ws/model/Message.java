@@ -2,15 +2,12 @@ package com.filesboxx.ws.model;
 
 import java.security.Timestamp;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.google.gson.Gson;
@@ -18,6 +15,10 @@ import com.google.gson.GsonBuilder;
 
 @Entity
 @Table(name = "MESSAGE")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Message {
 
 	@Id
@@ -29,68 +30,27 @@ public class Message {
 	private String chatId;
 	@Column(name = "TEXT")
 	private String text;
-	@Column(name = "SEEN")
-	private Boolean seen;
+	@Column(name = "SENDER_ID")
+	private String senderId;
+	@Column(name = "RECIPIENT_ID")
+	private String recipientId;
+	@Column(name = "STATUS")
+	private MessageStatus status;
 	@Column(name = "DATE_TIME")
 	private Timestamp dateTime;
 	
 	@ManyToOne(targetEntity = Chat.class, cascade = CascadeType.ALL)
 	@JoinColumn(name = "CHAT_ID", referencedColumnName = "CHAT_ID", insertable = false, updatable = false)
 	private Chat chat;
-	
-	public Message() {
-		// TODO Auto-generated constructor stub
-	}
 
-	public Message(String messageId, String chatId, String text, Boolean seen, Timestamp dateTime) {
-		super();
-		this.messageId = messageId;
-		this.chatId = chatId;
-		this.text = text;
-		this.seen = seen;
-		this.dateTime = dateTime;
-	}
+	@OneToOne(targetEntity = User.class, cascade = CascadeType.ALL)
+	@JoinColumn(name = "SENDER_ID", referencedColumnName = "USER_ID", insertable = false, updatable = false)
+	private User one;
 
-	public String getMessageId() {
-		return messageId;
-	}
+	@OneToOne(targetEntity = User.class, cascade = CascadeType.ALL)
+	@JoinColumn(name = "RECIPIENT_ID", referencedColumnName = "USER_ID", insertable = false, updatable = false)
+	private User two;
 
-	public void setMessageId(String messageId) {
-		this.messageId = messageId;
-	}
-
-	public String getChatId() {
-		return chatId;
-	}
-
-	public void setChatId(String chatId) {
-		this.chatId = chatId;
-	}
-
-	public String getText() {
-		return text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
-	}
-
-	public Boolean getSeen() {
-		return seen;
-	}
-
-	public void setSeen(Boolean seen) {
-		this.seen = seen;
-	}
-
-	public Timestamp getDateTime() {
-		return dateTime;
-	}
-
-	public void setDateTime(Timestamp dateTime) {
-		this.dateTime = dateTime;
-	}
-	
 	@Override
 	public String toString() {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
