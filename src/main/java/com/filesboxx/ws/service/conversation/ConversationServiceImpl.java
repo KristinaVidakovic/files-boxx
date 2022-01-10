@@ -14,35 +14,35 @@ public class ConversationServiceImpl implements ConversationService{
     private ConversationRepository conversationRepository;
     @Override
     public Optional<String> getChatId(String senderId, String recipientId, boolean createIfNotExist) {
-//        return conversationRepository
-//                .findBySenderIdAndRecipientId(senderId, recipientId)
-//                .map(Conversation::getChatId)
-//                .or(() -> {
-//                    if(!createIfNotExist) {
-//                        return  Optional.empty();
-//                    }
-//                    String chatId =
-//                            String.format("%s_%s", senderId, recipientId);
-//
-//                    Conversation senderRecipient = Conversation
-//                            .builder()
-//                            .chatId(chatId)
-//                            .senderId(senderId)
-//                            .recipientId(recipientId)
-//                            .build();
-//
-//                    Conversation recipientSender = Conversation
-//                            .builder()
-//                            .chatId(chatId)
-//                            .senderId(recipientId)
-//                            .recipientId(senderId)
-//                            .build();
-//                    conversationRepository.save(senderRecipient);
-//                    conversationRepository.save(recipientSender);
-//
-//                    return Optional.of(chatId);
-//                });
-        return null;
+        return conversationRepository
+                .findBySenderIdAndRecipientId(senderId, recipientId)
+                .map(Conversation::getChatId)
+                .or(() -> {
+                    if(!createIfNotExist) {
+                        return  Optional.empty();
+                    }
+                    String chatId =
+                            String.format("%s_%s", senderId, recipientId);
+
+                    Conversation senderRecipient = Conversation
+                            .builder()
+                            .chatId(chatId)
+                            .senderId(senderId)
+                            .recipientId(recipientId)
+                            .build();
+
+                    Conversation recipientSender = Conversation
+                            .builder()
+                            .chatId(chatId)
+                            .senderId(recipientId)
+                            .recipientId(senderId)
+                            .build();
+                    conversationRepository.save(senderRecipient);
+                    conversationRepository.save(recipientSender);
+
+                    return Optional.of(chatId);
+                });
+
     }
 
 }
