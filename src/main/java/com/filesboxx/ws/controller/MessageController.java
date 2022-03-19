@@ -38,7 +38,7 @@ public class MessageController {
                 new Notification(
                         saved.getMessageId(),
                         saved.getSenderId(),
-                        "Peraa"));
+                        saved.getText()));
     }
 
     @GetMapping("/messages/{senderId}/{recipientId}/count")

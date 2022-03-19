@@ -4,10 +4,7 @@ import java.security.Timestamp;
 
 import javax.persistence.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.google.gson.Gson;
@@ -19,6 +16,7 @@ import com.google.gson.GsonBuilder;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Message {
 
 	@Id

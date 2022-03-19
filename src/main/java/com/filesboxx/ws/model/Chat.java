@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.google.gson.Gson;
@@ -13,6 +14,11 @@ import com.google.gson.GsonBuilder;
 
 @Entity
 @Table(name = "CHAT")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Chat {
 
 	@Id
@@ -20,23 +26,6 @@ public class Chat {
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "CHAT_ID")
 	private String chatId;
-	
-	public Chat() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public Chat(String chatId) {
-		super();
-		this.chatId = chatId;
-	}
-
-	public String getChatId() {
-		return chatId;
-	}
-
-	public void setChatId(String chatId) {
-		this.chatId = chatId;
-	}
 	
 	@Override
 	public String toString() {
