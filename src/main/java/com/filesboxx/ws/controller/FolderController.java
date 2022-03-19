@@ -24,9 +24,12 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping(value = "folders")
 public class FolderController {
-	
+	private final FolderService folderService;
+
 	@Autowired
-	private FolderService folderService;
+	FolderController(FolderService folderService) {
+		this.folderService = folderService;
+	}
 	
 	@ApiOperation(value = "Method for inserting new folder, by user ID.")
 	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = Folder.class),
@@ -38,7 +41,7 @@ public class FolderController {
 		
 		OneOfFolder responseFolder = folderService.folder(folder, userId);
 		
-		return new ResponseEntity<OneOfFolder>(responseFolder, responseFolder instanceof Folder ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(responseFolder, responseFolder instanceof Folder ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
 	}
 	
 	@ApiOperation(value = "Method for getting list of folders by user ID.")
@@ -51,8 +54,8 @@ public class FolderController {
 		
 		List<OneOfFolder> folders = folderService.folders(userId);
 		
-		return folders.get(0) instanceof Folder ? new ResponseEntity<List<OneOfFolder>>(folders, HttpStatus.OK) 
-				: new ResponseEntity<List<OneOfFolder>>(folders, ((ResponseMessage)folders.get(0)).getStatus());
+		return folders.get(0) instanceof Folder ? new ResponseEntity<>(folders, HttpStatus.OK)
+				: new ResponseEntity<>(folders, ((ResponseMessage)folders.get(0)).getStatus());
 	}
 
 	@ApiOperation(value = "Method for deleting folder by folder ID.")
@@ -64,6 +67,6 @@ public class FolderController {
 
 		ResponseMessage message = folderService.deleteFolder(folderId);
 
-		return new ResponseEntity<ResponseMessage>(message, message.getStatus());
+		return new ResponseEntity<>(message, message.getStatus());
 	}
 }

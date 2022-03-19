@@ -13,4 +13,5 @@ public interface FolderService {
 	List<OneOfFolder> folders(String userId);
 
 	ResponseMessage deleteFolder(String folderId);
+
 }

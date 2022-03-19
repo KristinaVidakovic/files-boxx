@@ -1,22 +1,16 @@
 package com.filesboxx.ws.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
+@AllArgsConstructor
 public enum MessageStatus {
     RECEIVED("RECEIVED"),
     DELIVERED("DELIVERED");
 
-    private String value;
-
-    MessageStatus(String value) {
-        this.value = value;
-    }
-
-    @JsonValue
-    public String getValue() {
-        return value;
-    }
+    private final String value;
 
     @Override
     public String toString() {

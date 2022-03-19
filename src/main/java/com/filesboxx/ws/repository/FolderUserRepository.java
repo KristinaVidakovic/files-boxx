@@ -12,5 +12,6 @@ public interface FolderUserRepository extends JpaRepository<BelongsFolderUser, S
 
 	List<BelongsFolderUser> findByUserId(String userId);
 
-	BelongsFolderUser findByFolderId(String folderId);
+	BelongsFolderUser findByFolderIdAndDeletedFalse(String folderId);
+
 }

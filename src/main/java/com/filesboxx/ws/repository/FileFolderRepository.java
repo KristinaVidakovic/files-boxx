@@ -10,7 +10,7 @@ import com.filesboxx.ws.model.BelongsFileFolder;
 @Repository
 public interface FileFolderRepository extends JpaRepository<BelongsFileFolder, String>{
 
-	BelongsFileFolder findByFileId(String fileId);
+	BelongsFileFolder findByFileIdAndDeletedFalse(String fileId);
 	
 	List<BelongsFileFolder> findByFolderId(String folderId);
 

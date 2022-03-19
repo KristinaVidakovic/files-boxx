@@ -13,12 +13,15 @@ import com.filesboxx.ws.model.User;
 import com.filesboxx.ws.repository.UserRepository;
 
 @Service
-public class UserServiceImpl implements UserService{
-
+public class UserServiceImpl implements UserService {
 	static Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
+
+	private final UserRepository userRepo;
 	
 	@Autowired
-	private UserRepository userRepo;
+	UserServiceImpl(UserRepository userRepo) {
+		this.userRepo = userRepo;
+	}
 	
 	public OneOfUser user(User user) {
 		
@@ -44,7 +47,7 @@ public class UserServiceImpl implements UserService{
 		
 		userRepo.save(user);
 		
-		log.info("New user registered: " + user.toString());
+		log.info("New user registered with username: " + user.getUsername() + "!");
 		
 		return user;
 	}
@@ -65,7 +68,7 @@ public class UserServiceImpl implements UserService{
 		
 		User user = userRepo.findByUserId(userId);
 		
-		log.info("User : " + user.toString());
+		log.info("User found successfully!");
 		
 		return user;
 	}
@@ -99,7 +102,7 @@ public class UserServiceImpl implements UserService{
 			message.setStatus(HttpStatus.BAD_REQUEST);
 			return message;
 		} else {
-			log.info("User: " + user.toString());
+			log.info("User successfully signed in!");
 			return user;
 		}
 		

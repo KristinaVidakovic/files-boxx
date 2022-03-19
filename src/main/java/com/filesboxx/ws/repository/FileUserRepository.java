@@ -10,6 +10,8 @@ import com.filesboxx.ws.model.BelongsFileUser;
 @Repository
 public interface FileUserRepository extends JpaRepository<BelongsFileUser, String>{
 
-	BelongsFileUser findByFileId(String fileId);
+	BelongsFileUser findByFileIdAndDeletedFalse(String fileId);
+
 	List<BelongsFileUser> findByUserId(String userId);
+
 }

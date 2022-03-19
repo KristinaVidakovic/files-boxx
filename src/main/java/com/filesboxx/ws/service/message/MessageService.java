@@ -16,4 +16,5 @@ public interface MessageService {
     Message findById(String id) throws Exception;
 
     void updateStatuses(String senderId, String recipientId, MessageStatus status);
+
 }

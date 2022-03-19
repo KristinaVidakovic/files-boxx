@@ -26,9 +26,12 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping("files")
 public class FileController {
+	private final FileService fileService;
 
 	@Autowired
-	private FileService fileService;
+	FileController(FileService fileService){
+		this.fileService = fileService;
+	}
 	
 	@ApiOperation(value = "Method for inserting new file, outside the folder, by user ID.")
 	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = File.class),
@@ -41,7 +44,7 @@ public class FileController {
 		
 		OneOfFile responseFile = fileService.file(file, userId);
 		
-		return new ResponseEntity<OneOfFile>(responseFile, responseFile instanceof File ? HttpStatus.OK : ((ResponseMessage)responseFile).getStatus());
+		return new ResponseEntity<>(responseFile, responseFile instanceof File ? HttpStatus.OK : ((ResponseMessage) responseFile).getStatus());
 	}
 	
 	@ApiOperation(value = "Method for inserting new file, inside the folder, by folder ID.")
@@ -55,7 +58,7 @@ public class FileController {
 		
 		OneOfFile responseFile = fileService.fileFolder(file, folderId);
 		
-		return new ResponseEntity<OneOfFile>(responseFile, responseFile instanceof File ? HttpStatus.OK : ((ResponseMessage)responseFile).getStatus());
+		return new ResponseEntity<>(responseFile, responseFile instanceof File ? HttpStatus.OK : ((ResponseMessage) responseFile).getStatus());
 	}
 	
 	@ApiOperation(value = "Method for change the location of the file.")
@@ -67,7 +70,7 @@ public class FileController {
 		
 		ResponseMessage message = fileService.updateLocation(request);
 		
-		return new ResponseEntity<ResponseMessage>(message, message.getStatus());
+		return new ResponseEntity<>(message, message.getStatus());
 	}
 	
 	@ApiOperation(value = "Method for getting files, outside the folders, by user ID.")
@@ -80,8 +83,8 @@ public class FileController {
 		
 		List<OneOfFile> files = fileService.files(userId);
 		
-		return files.get(0) instanceof File ? new ResponseEntity<List<OneOfFile>>(files, HttpStatus.OK) 
-				: new ResponseEntity<List<OneOfFile>>(files, ((ResponseMessage)files.get(0)).getStatus());
+		return files.get(0) instanceof File ? new ResponseEntity<>(files, HttpStatus.OK)
+				: new ResponseEntity<>(files, ((ResponseMessage) files.get(0)).getStatus());
 	}
 	
 	@ApiOperation(value = "Method for getting files from specific folder.")
@@ -93,7 +96,7 @@ public class FileController {
 		
 		List<OneOfFile> files = fileService.filesFolder(folderId);
 		
-		return new ResponseEntity<List<OneOfFile>>(files, files.get(0) instanceof File ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(files, files.get(0) instanceof File ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
 	}
 
 	@ApiOperation(value = "Method for deleting file by file ID.")
@@ -105,6 +108,6 @@ public class FileController {
 
 		ResponseMessage message = fileService.deleteFile(fileId);
 
-		return new ResponseEntity<ResponseMessage>(message, message.getStatus());
+		return new ResponseEntity<>(message, message.getStatus());
 	}
 }

@@ -17,13 +17,16 @@ import java.util.Optional;
 
 @Controller
 public class MessageController {
+    private final SimpMessagingTemplate messagingTemplate;
+    private final MessageService messageService;
+    private final ConversationService conversationService;
 
     @Autowired
-    private SimpMessagingTemplate messagingTemplate;
-    @Autowired
-    private MessageService messageService;
-    @Autowired
-    private ConversationService conversationService;
+    MessageController(SimpMessagingTemplate messagingTemplate, MessageService messageService, ConversationService conversationService){
+        this.messagingTemplate = messagingTemplate;
+        this.messageService = messageService;
+        this.conversationService = conversationService;
+    }
 
     @MessageMapping("/chat")
     public void processMessage(@Payload Message chatMessage) {

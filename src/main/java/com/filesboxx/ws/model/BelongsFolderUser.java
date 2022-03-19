@@ -9,6 +9,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.google.gson.Gson;
@@ -16,6 +20,10 @@ import com.google.gson.GsonBuilder;
 
 @Entity
 @Table(name = "BELONGS_FOLDER_USER")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class BelongsFolderUser {
 
 	@Id
@@ -37,49 +45,6 @@ public class BelongsFolderUser {
 	@OneToOne(targetEntity = Folder.class, cascade = CascadeType.ALL)
 	@JoinColumn(name = "FOLDER_ID", referencedColumnName = "FOLDER_ID", insertable = false, updatable = false)
 	private Folder folder;
-	
-	public BelongsFolderUser() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public BelongsFolderUser(String bfuId, String userId, String folderId) {
-		super();
-		this.bfuId = bfuId;
-		this.userId = userId;
-		this.folderId = folderId;
-	}
-
-	public String getBfuId() {
-		return bfuId;
-	}
-
-	public void setBfuId(String bfuId) {
-		this.bfuId = bfuId;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-	public String getFolderId() {
-		return folderId;
-	}
-
-	public void setFolderId(String folderId) {
-		this.folderId = folderId;
-	}
-
-	public Boolean getDeleted() {
-		return deleted;
-	}
-
-	public void setDeleted(Boolean deleted) {
-		this.deleted = deleted;
-	}
 
 	@Override
 	public String toString() {

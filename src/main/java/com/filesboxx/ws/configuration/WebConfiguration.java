@@ -29,7 +29,7 @@ public class WebConfiguration implements WebSocketMessageBrokerConfigurer {
 	private Long readTimeout;
 
 	@Bean
-	public RestTemplate restTemplate(RestTemplateBuilder builder) {
+	public RestTemplate restTemplate() {
 		
 		return new RestTemplateBuilder()
 				.setConnectTimeout(Duration.ofMillis(connectTimeout))

@@ -7,6 +7,10 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.google.gson.Gson;
@@ -16,6 +20,10 @@ import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Table(name = "FILE")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class File implements OneOfFile{
 
 	@Id
@@ -24,7 +32,7 @@ public class File implements OneOfFile{
 	@ApiModelProperty(example = "cb61913d-d44f-4378-9488-5bcda7e2dbbb")
 	@Column(name = "FILE_ID")
 	private String fileId;
-	@ApiModelProperty(example = "FilesBoxx - servisi.xlsx", hidden = false)
+	@ApiModelProperty(example = "FilesBoxx - servisi.xlsx")
 	@Column(name = "NAME")
 	private String name;
 	@Column(name = "DATA")
@@ -33,48 +41,12 @@ public class File implements OneOfFile{
 	@ApiModelProperty(example = "false")
 	@Column(name = "DELETED")
 	private Boolean deleted;
-	
-	public File() {
-		// TODO Auto-generated constructor stub
-	}
 
 	public File(String fileId, String name, byte[] data) {
 		super();
 		this.fileId = fileId;
 		this.name = name;
 		this.data = data;
-	}
-
-	public String getFileId() {
-		return fileId;
-	}
-
-	public void setFileId(String fileId) {
-		this.fileId = fileId;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public byte[] getData() {
-		return data;
-	}
-
-	public void setData(byte[] data) {
-		this.data = data;
-	}
-	
-	public Boolean getDeleted() {
-		return deleted;
-	}
-
-	public void setDeleted(Boolean deleted) {
-		this.deleted = deleted;
 	}
 
 	@Override

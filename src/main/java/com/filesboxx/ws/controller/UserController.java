@@ -22,9 +22,12 @@ import io.swagger.annotations.ApiResponses;
 
 @RestController
 public class UserController {
+	private final UserService userService;
 
 	@Autowired
-	private UserService userService;
+	UserController(UserService userService){
+		this.userService = userService;
+	}
 	
 	@ApiOperation(value = "Method for registration new user.")
 	@ApiResponses({@ApiResponse(code = 200, message = "OK", response = User.class),
@@ -35,7 +38,7 @@ public class UserController {
 		
 		OneOfUser responseUser = userService.user(user);
 		
-		return new ResponseEntity<OneOfUser>(responseUser, responseUser instanceof User ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(responseUser, responseUser instanceof User ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
 	}
 	
 	@ApiOperation(value = "Method for getting user by user ID.")
@@ -47,7 +50,7 @@ public class UserController {
 		
 		OneOfUser user = userService.getUserByUserId(userId);
 		
-		return new ResponseEntity<OneOfUser>(user, user instanceof User ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(user, user instanceof User ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
 	}
 	
 	@ApiOperation(value = "Method for getting user by username and password.")
@@ -59,6 +62,6 @@ public class UserController {
 		
 		OneOfUser user = userService.getUserSignIn(body);
 		
-		return new ResponseEntity<OneOfUser>(user, user instanceof User ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(user, user instanceof User ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
 	}
 }

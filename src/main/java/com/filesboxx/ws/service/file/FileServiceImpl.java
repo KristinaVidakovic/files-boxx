@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,30 +23,25 @@ import com.filesboxx.ws.repository.FileUserRepository;
 import com.filesboxx.ws.repository.FolderRepository;
 import com.filesboxx.ws.repository.UserRepository;
 
-import javax.sql.DataSource;
-
 @Service
-public class FileServiceImpl implements FileService{
-	
+public class FileServiceImpl implements FileService {
 	static Logger log = LoggerFactory.getLogger(FileServiceImpl.class);
 
-	@Autowired
-	private DataSource dataSource;
+	private final FileRepository fileRepo;
+	private final FileUserRepository fileUserRepo;
+	private final FileFolderRepository fileFolderRepo;
+	private final UserRepository userRepo;
+	private final FolderRepository folderRepo;
 
 	@Autowired
-	private FileRepository fileRepo;
-	
-	@Autowired
-	private FileUserRepository fileUserRepo;
-	
-	@Autowired
-	private FileFolderRepository fileFolderRepo;
-	
-	@Autowired
-	private UserRepository userRepo;
-	
-	@Autowired
-	private FolderRepository folderRepo;
+	FileServiceImpl(FileRepository fileRepo, FileUserRepository fileUserRepo, FileFolderRepository fileFolderRepo,
+					UserRepository userRepo, FolderRepository folderRepo){
+		this.fileRepo = fileRepo;
+		this.fileUserRepo = fileUserRepo;
+		this.fileFolderRepo = fileFolderRepo;
+		this.userRepo = userRepo;
+		this.folderRepo = folderRepo;
+	}
 	
 	@Override
 	public OneOfFile file(MultipartFile forwarded, String userId) {
@@ -78,14 +72,14 @@ public class FileServiceImpl implements FileService{
 		
 		file.setDeleted(false);
 		fileRepo.save(file);
-		log.info("Forwarded file entered: " + file.toString());
+		log.info("File " + file.getName() + "entered!");
 		
 		BelongsFileUser belongs = new BelongsFileUser();
 		belongs.setFileId(file.getFileId());
 		belongs.setUserId(userId);
 		belongs.setDeleted(false);
 		fileUserRepo.save(belongs);
-		log.info("Inserted connection file-user: " + belongs.toString());
+		log.info("Inserted connection file-user!");
 	
 		return file;
 	}
@@ -119,14 +113,14 @@ public class FileServiceImpl implements FileService{
 		
 		file.setDeleted(false);
 		fileRepo.save(file);
-		log.info("Forwarded file entered: " + file.toString());
+		log.info("File " + file.getName() + "entered!");
 		
 		BelongsFileFolder belongs = new BelongsFileFolder();
 		belongs.setFileId(file.getFileId());
 		belongs.setFolderId(folderId);
 		belongs.setDeleted(false);
 		fileFolderRepo.save(belongs);
-		log.info("Inserted connection file-folder: " + belongs.toString());
+		log.info("Inserted connection file-folder!");
 	
 		return file;
 	}
@@ -147,22 +141,22 @@ public class FileServiceImpl implements FileService{
 				return message;
 			}
 			
-			BelongsFileFolder bff = fileFolderRepo.findByFileId(request.getFileId());
+			BelongsFileFolder bff = fileFolderRepo.findByFileIdAndDeletedFalse(request.getFileId());
 			BelongsFileUser bfu = new BelongsFileUser();
 			bfu.setFileId(request.getFileId());
 			bfu.setUserId(request.getUserId());
 			bfu.setDeleted(false);
 			fileUserRepo.save(bfu);
-			log.info("Connection file-user added: " + bfu.toString());
+			log.info("Connection file-user added!");
 			bff.setDeleted(true);
 			fileFolderRepo.save(bff);
-			log.info("Connection file-folder updated: " + bff.toString());
+			log.info("Connection file-folder updated!");
 			message.setStatus(HttpStatus.OK);
 			message.setMessage("Successfully changed file location.");
-			
+
 			log.info("Executed PUT method.");
 			return message;
-			
+
 		} else {
 			
 			if (fileRepo.file(request.getFileId()) == null || folderRepo.folder(request.getFolderId()) == null) {
@@ -172,32 +166,31 @@ public class FileServiceImpl implements FileService{
 				return message;
 			}
 			
-			BelongsFileUser bfu = fileUserRepo.findByFileId(request.getFileId());
+			BelongsFileUser bfu = fileUserRepo.findByFileIdAndDeletedFalse(request.getFileId());
 			if(bfu == null) {
-				BelongsFileFolder bff = fileFolderRepo.findByFileId(request.getFileId());
+				BelongsFileFolder bff = fileFolderRepo.findByFileIdAndDeletedFalse(request.getFileId());
 				bff.setDeleted(true);
 				fileFolderRepo.save(bff);
-				log.info("Connection file-user updated: " + bff.toString());
+				log.info("Connection file-user updated!");
 			} else {
 				bfu.setDeleted(true);
 				fileUserRepo.save(bfu);
-				log.info("Connection file-user updated: " + bfu.toString());
+				log.info("Connection file-user updated!");
 			}
 			BelongsFileFolder bff = new BelongsFileFolder();
 			bff.setFileId(request.getFileId());
 			bff.setFolderId(request.getFolderId());
 			bff.setDeleted(false);
 			fileFolderRepo.save(bff);
-			log.info("Connection file-folder added: " + bff.toString());
+			log.info("Connection file-folder added!");
 
 			message.setStatus(HttpStatus.OK);
 			message.setMessage("Successfully changed file location.");
-			
+
 			log.info("Executed PUT method.");
 			return message;
-		} 
-		
-		
+		}
+
 	}
 	
 	@Override
@@ -228,12 +221,12 @@ public class FileServiceImpl implements FileService{
 		
 		
 		for (BelongsFileUser bfu : belongs) {
-			if (bfu.getDeleted() == false && fileRepo.findByFileId(bfu.getFileId()).getDeleted() == false) {
+			if (!bfu.getDeleted() && !fileRepo.findByFileId(bfu.getFileId()).getDeleted()) {
 				list.add(fileRepo.findByFileId(bfu.getFileId()));
 			}
 		}
 		
-		log.info("Successfully executet GET method.");
+		log.info("Successfully executed GET method.");
 		
 		return list;
 	}
@@ -281,17 +274,17 @@ public class FileServiceImpl implements FileService{
 
 		File file = fileRepo.findByFileId(fileId);
 
-		BelongsFileFolder bff = fileFolderRepo.findByFileId(fileId);
+		BelongsFileFolder bff = fileFolderRepo.findByFileIdAndDeletedFalse(fileId);
 		if (bff != null) {
 			bff.setDeleted(true);
 			fileFolderRepo.save(bff);
-			log.info("Belongs file folder deleted: " + bff.toString());
+			log.info("Belongs file folder deleted!");
 		}
-		BelongsFileUser bfu = fileUserRepo.findByFileId(fileId);
+		BelongsFileUser bfu = fileUserRepo.findByFileIdAndDeletedFalse(fileId);
 		if (bfu != null) {
 			bfu.setDeleted(true);
 			fileUserRepo.save(bfu);
-			log.info("Belongs file user deleted: " + bfu.toString());
+			log.info("Belongs file user deleted!");
 		}
 
 		file.setDeleted(true);

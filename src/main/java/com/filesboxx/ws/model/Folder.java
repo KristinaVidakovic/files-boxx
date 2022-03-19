@@ -6,6 +6,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.google.gson.Gson;
@@ -15,6 +19,10 @@ import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Table(name = "FOLDER")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Folder implements OneOfFolder{
 
 	@Id
@@ -29,39 +37,11 @@ public class Folder implements OneOfFolder{
 	@ApiModelProperty(example = "false")
 	@Column(name = "DELETED")
 	private Boolean deleted;
-	
-	public Folder() {
-		// TODO Auto-generated constructor stub
-	}
 
 	public Folder(String folderId, String name) {
 		super();
 		this.folderId = folderId;
 		this.name = name;
-	}
-
-	public String getFolderId() {
-		return folderId;
-	}
-
-	public void setFolderId(String folderId) {
-		this.folderId = folderId;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public Boolean getDeleted() {
-		return deleted;
-	}
-
-	public void setDeleted(Boolean deleted) {
-		this.deleted = deleted;
 	}
 
 	@Override

@@ -19,17 +19,18 @@ import com.filesboxx.ws.repository.UserRepository;
 
 @Service
 public class FolderServiceImpl implements FolderService {
-
 	static Logger log = LoggerFactory.getLogger(FolderServiceImpl.class);
+
+	private final FolderRepository folderRepo;
+	private final FolderUserRepository folderUserRepo;
+	private final UserRepository userRepo;
 	
 	@Autowired
-	private FolderRepository folderRepo;
-	
-	@Autowired
-	private FolderUserRepository folderUserRepo;
-	
-	@Autowired
-	private UserRepository userRepo;
+	FolderServiceImpl(FolderRepository folderRepo, FolderUserRepository folderUserRepo, UserRepository userRepo) {
+		this.folderRepo = folderRepo;
+		this.folderUserRepo = folderUserRepo;
+		this.userRepo = userRepo;
+	}
 
 	@Override
 	public OneOfFolder folder(Folder folder, String userId) {
@@ -57,14 +58,14 @@ public class FolderServiceImpl implements FolderService {
 		folder.setDeleted(false);
 		folderRepo.save(folder);
 
-		log.info("Created folder: " + folder.toString());
+		log.info("Created folder " + folder.getName() + "!");
 
 		BelongsFolderUser belongs = new BelongsFolderUser();
 		belongs.setFolderId(folder.getFolderId());
 		belongs.setUserId(userId);
 		belongs.setDeleted(false);
 		folderUserRepo.save(belongs);
-		log.info("Inserted connection folder-user: " + belongs.toString());
+		log.info("Inserted connection folder-user!");
 
 		return folder;
 	}
@@ -120,11 +121,11 @@ public class FolderServiceImpl implements FolderService {
 			return message;
 		}
 
-		BelongsFolderUser bfu = folderUserRepo.findByFolderId(folderId);
+		BelongsFolderUser bfu = folderUserRepo.findByFolderIdAndDeletedFalse(folderId);
 		if (bfu != null) {
 			bfu.setDeleted(true);
 			folderUserRepo.save(bfu);
-			log.info("Belongs folder user: " + bfu.toString());
+			log.info("Inserted belongs folder user!");
 		}
 
 		Folder folder = folderRepo.findByFolderId(folderId);

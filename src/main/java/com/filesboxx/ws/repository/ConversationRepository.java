@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface ConversationRepository extends JpaRepository<Conversation,String> {
 
     Optional<Conversation> findBySenderIdAndRecipientId(String senderId, String recipientId);
+
 }

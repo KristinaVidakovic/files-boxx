@@ -8,8 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -18,11 +16,11 @@ import com.google.gson.GsonBuilder;
 
 @Entity
 @Table(name = "CONVERSATION")
-@Builder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Conversation {
 
 	@Id

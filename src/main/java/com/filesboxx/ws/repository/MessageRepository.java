@@ -10,8 +10,8 @@ import java.util.List;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, String> {
 
-    long countBySenderIdAndRecipientIdAndStatus(
-            String senderId, String recipientId, MessageStatus status);
+    long countBySenderIdAndRecipientIdAndStatus(String senderId, String recipientId, MessageStatus status);
 
     List<Message> findByChatId(String chatId);
+
 }

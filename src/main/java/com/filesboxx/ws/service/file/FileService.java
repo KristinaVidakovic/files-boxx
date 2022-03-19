@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.filesboxx.ws.model.Body;
-import com.filesboxx.ws.model.File;
 import com.filesboxx.ws.model.OneOfFile;
 import com.filesboxx.ws.model.ResponseMessage;
 
@@ -22,4 +21,5 @@ public interface FileService {
 	List<OneOfFile> filesFolder(String folderId);
 
 	ResponseMessage deleteFile(String fileId);
+
 }

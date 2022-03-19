@@ -8,10 +8,14 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class ConversationServiceImpl implements ConversationService{
+public class ConversationServiceImpl implements ConversationService {
+    private final ConversationRepository conversationRepository;
 
     @Autowired
-    private ConversationRepository conversationRepository;
+    ConversationServiceImpl(ConversationRepository conversationRepository) {
+        this.conversationRepository = conversationRepository;
+    }
+
     @Override
     public Optional<String> getChatId(String senderId, String recipientId, boolean createIfNotExist) {
         return conversationRepository
@@ -42,7 +46,6 @@ public class ConversationServiceImpl implements ConversationService{
 
                     return Optional.of(chatId);
                 });
-
     }
 
 }

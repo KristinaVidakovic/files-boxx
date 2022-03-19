@@ -11,4 +11,5 @@ public interface UserService {
 	OneOfUser getUserByUserId(String userId);
 	
 	OneOfUser getUserSignIn(BodySignIn body);
+
 }

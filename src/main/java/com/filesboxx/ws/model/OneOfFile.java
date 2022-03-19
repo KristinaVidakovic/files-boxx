@@ -10,5 +10,4 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 	@JsonSubTypes.Type(value = ResponseMessage.class)
 })
 public interface OneOfFile {
-
 }

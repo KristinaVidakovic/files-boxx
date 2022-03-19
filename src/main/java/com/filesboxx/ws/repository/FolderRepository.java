@@ -15,4 +15,5 @@ public interface FolderRepository extends JpaRepository<Folder, String>{
 	
 	@Query("SELECT folderId FROM Folder WHERE folderId = ?1 AND deleted = FALSE")
 	String folder (String folderId);
+
 }

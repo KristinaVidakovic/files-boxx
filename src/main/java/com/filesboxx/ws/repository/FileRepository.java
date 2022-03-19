@@ -13,4 +13,5 @@ public interface FileRepository extends JpaRepository<File, String>{
 	
 	@Query("SELECT fileId FROM File WHERE fileId = ?1 AND deleted = FALSE")
 	String file (String fileId);
+
 }

@@ -23,7 +23,6 @@ import com.google.gson.GsonBuilder;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class Notification {
 
 	@Id

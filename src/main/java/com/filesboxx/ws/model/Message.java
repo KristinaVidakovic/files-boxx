@@ -16,7 +16,6 @@ import com.google.gson.GsonBuilder;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class Message {
 
 	@Id
