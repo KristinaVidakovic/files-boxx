@@ -20,7 +20,6 @@ public class MessageServiceImpl implements MessageService{
     private MessageRepository repository;
     @Autowired
     private ConversationService conversationService;
-    //@Autowired private MongoOperations mongoOperations;
     @Autowired
     private DataSource dataSource;
 
@@ -71,11 +70,5 @@ public class MessageServiceImpl implements MessageService{
         if (stat != 0) {
             System.out.println("Uspesno");
         } else System.out.println("Neuspesno");
-//        Query query = new Query(
-//                Criteria
-//                        .where("senderId").is(senderId)
-//                        .and("recipientId").is(recipientId));
-//        Update update = Update.update("status", status);
-//        mongoOperations.updateMulti(query, update, ChatMessage.class);
     }
 }
