@@ -17,6 +17,8 @@ import com.google.gson.GsonBuilder;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "FOLDER")
 @Getter
@@ -30,7 +32,7 @@ public class Folder implements OneOfFolder{
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@ApiModelProperty(example = "11e06451-5fb8-46c4-9050-5c5f605320c6")
 	@Column(name = "FOLDER_ID")
-	private String folderId;
+	private UUID folderId;
 	@ApiModelProperty(example = "New folder")
 	@Column(name = "NAME")
 	private String name;
@@ -38,7 +40,7 @@ public class Folder implements OneOfFolder{
 	@Column(name = "DELETED")
 	private Boolean deleted;
 
-	public Folder(String folderId, String name) {
+	public Folder(UUID folderId, String name) {
 		super();
 		this.folderId = folderId;
 		this.name = name;

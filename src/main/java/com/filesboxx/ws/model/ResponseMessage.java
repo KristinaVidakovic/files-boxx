@@ -15,7 +15,7 @@ import io.swagger.annotations.ApiModelProperty;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseMessage implements OneOfUser, OneOfFolder, OneOfFile{
+public class ResponseMessage implements OneOfFolder, OneOfFile{
 
 	@ApiModelProperty(example = "Forwarded object doesn't exists.")
 	private String message;

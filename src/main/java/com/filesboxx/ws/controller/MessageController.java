@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 public class MessageController {
@@ -30,14 +31,14 @@ public class MessageController {
 
     @MessageMapping("/chat")
     public void processMessage(@Payload Message chatMessage) {
-        Optional<String> chatId = conversationService
+        Optional<UUID> chatId = conversationService
                 .getChatId(chatMessage.getSenderId(), chatMessage.getRecipientId(), true);
         chatMessage.setChatId(chatId.get());
 
         Message saved = messageService.save(chatMessage);
 
         messagingTemplate.convertAndSendToUser(
-                chatMessage.getRecipientId(),"/queue/messages",
+                String.valueOf(chatMessage.getRecipientId()),"/queue/messages",
                 new Notification(
                         saved.getMessageId(),
                         saved.getSenderId(),
@@ -46,22 +47,22 @@ public class MessageController {
 
     @GetMapping("/messages/{senderId}/{recipientId}/count")
     public ResponseEntity<Long> countNewMessages(
-            @PathVariable String senderId,
-            @PathVariable String recipientId) {
+            @PathVariable UUID senderId,
+            @PathVariable UUID recipientId) {
 
         return ResponseEntity
                 .ok(messageService.countNewMessages(senderId, recipientId));
     }
 
     @GetMapping("/messages/{senderId}/{recipientId}")
-    public ResponseEntity<?> findChatMessages ( @PathVariable String senderId,
-                                                @PathVariable String recipientId) {
+    public ResponseEntity<?> findChatMessages ( @PathVariable UUID senderId,
+                                                @PathVariable UUID recipientId) {
         return ResponseEntity
                 .ok(messageService.findChatMessages(senderId, recipientId));
     }
 
     @GetMapping("/messages/{id}")
-    public ResponseEntity<?> findMessage ( @PathVariable String id) throws Exception {
+    public ResponseEntity<?> findMessage ( @PathVariable UUID id) throws Exception {
         return ResponseEntity
                 .ok(messageService.findById(id));
     }

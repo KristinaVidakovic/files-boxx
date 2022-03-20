@@ -1,6 +1,7 @@
 package com.filesboxx.ws.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,7 @@ public class FolderController {
 	@RequestMapping(value = "folder/{userId}", method = RequestMethod.POST)
 	public ResponseEntity<OneOfFolder> folder(
 			@ApiParam(value = "JSON object representing the folder.", required = true) @RequestBody Folder folder, 
-			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable String userId){
+			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable UUID userId){
 		
 		OneOfFolder responseFolder = folderService.folder(folder, userId);
 		
@@ -50,7 +51,7 @@ public class FolderController {
 					@ApiResponse(code = 400, message = "BAD_REQUEST", response = ResponseMessage[].class)})
 	@RequestMapping(value = "/{userId}", method = RequestMethod.GET)
 	public ResponseEntity<List<OneOfFolder>> folders (
-			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable String userId) {
+			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable UUID userId) {
 		
 		List<OneOfFolder> folders = folderService.folders(userId);
 		
@@ -63,7 +64,7 @@ public class FolderController {
 			@ApiResponse(code = 400, message = "BAD_REQUEST", response = ResponseMessage.class)})
 	@RequestMapping(value = "delete/{folderId}", method = RequestMethod.DELETE)
 	public ResponseEntity<ResponseMessage> delete(
-			@ApiParam(value = "Value representing the unique folder identificator.", required = true) @PathVariable String folderId) {
+			@ApiParam(value = "Value representing the unique folder identificator.", required = true) @PathVariable UUID folderId) {
 
 		ResponseMessage message = folderService.deleteFolder(folderId);
 

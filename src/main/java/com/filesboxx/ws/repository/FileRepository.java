@@ -6,12 +6,14 @@ import org.springframework.stereotype.Repository;
 
 import com.filesboxx.ws.model.File;
 
-@Repository
-public interface FileRepository extends JpaRepository<File, String>{
+import java.util.UUID;
 
-	File findByFileId(String fileId);
+@Repository
+public interface FileRepository extends JpaRepository<File, UUID>{
+
+	File findByFileId(UUID fileId);
 	
 	@Query("SELECT fileId FROM File WHERE fileId = ?1 AND deleted = FALSE")
-	String file (String fileId);
+	UUID file (UUID fileId);
 
 }

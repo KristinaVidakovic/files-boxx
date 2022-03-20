@@ -12,6 +12,8 @@ import org.hibernate.annotations.GenericGenerator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "CHAT")
 @Getter
@@ -24,7 +26,7 @@ public class Chat {
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "CHAT_ID")
-	private String chatId;
+	private UUID chatId;
 	
 	@Override
 	public String toString() {

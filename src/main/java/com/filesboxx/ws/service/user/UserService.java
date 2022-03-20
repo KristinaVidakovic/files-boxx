@@ -1,17 +1,22 @@
 package com.filesboxx.ws.service.user;
 
-import com.filesboxx.ws.model.BodySignIn;
-import com.filesboxx.ws.model.OneOfUser;
+import com.filesboxx.ws.controller.users.dto.UserCreateDto;
+import com.filesboxx.ws.controller.users.dto.UserDto;
+import com.filesboxx.ws.controller.users.dto.UserSignInDto;
+import com.filesboxx.ws.controller.users.dto.UserUpdateDto;
 import com.filesboxx.ws.model.ResponseMessage;
-import com.filesboxx.ws.model.User;
+
+import java.util.UUID;
 
 public interface UserService {
 
-	OneOfUser user(User user);
+	UserDto create(UserCreateDto user);
 	
-	OneOfUser getUserByUserId(String userId);
+	UserDto getUserByUserId(UUID userId);
 	
-	OneOfUser getUserSignIn(BodySignIn body);
+	UserDto getUserSignIn(UserSignInDto body);
 
     ResponseMessage signOut();
+
+    UserDto update(UUID userId, UserUpdateDto dto);
 }

@@ -4,19 +4,21 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.filesboxx.ws.model.User;
+import com.filesboxx.ws.model.user.User;
+
+import java.util.UUID;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, String>{
+public interface UserRepository extends JpaRepository<User, UUID>{
 
 	User findByUsername(String username);
 	
-	User findByUserId(String userId);
+	User findByUserId(UUID userId);
 	
 	@Query("SELECT userId FROM User WHERE userId = ?1")
-	String user(String userId);
+	UUID user(UUID userId);
 
 	@Query("SELECT userId FROM User WHERE token is not null")
-	String findToken();
+	UUID findToken();
 
 }

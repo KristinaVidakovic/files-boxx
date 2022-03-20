@@ -18,6 +18,8 @@ import org.hibernate.annotations.GenericGenerator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "BELONGS_FILE_FOLDER")
 @Getter
@@ -30,11 +32,11 @@ public class BelongsFileFolder {
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "BFF_ID")
-	private String bffId;
+	private UUID bffId;
 	@Column(name = "FILE_ID")
-	private String fileId;
+	private UUID fileId;
 	@Column(name = "FOLDER_ID")
-	private String folderId;
+	private UUID folderId;
 	@Column(name = "DELETED")
 	private Boolean deleted;
 	

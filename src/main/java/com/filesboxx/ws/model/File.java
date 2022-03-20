@@ -18,6 +18,8 @@ import com.google.gson.GsonBuilder;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "FILE")
 @Getter
@@ -31,7 +33,7 @@ public class File implements OneOfFile{
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@ApiModelProperty(example = "cb61913d-d44f-4378-9488-5bcda7e2dbbb")
 	@Column(name = "FILE_ID")
-	private String fileId;
+	private UUID fileId;
 	@ApiModelProperty(example = "FilesBoxx - servisi.xlsx")
 	@Column(name = "NAME")
 	private String name;
@@ -42,7 +44,7 @@ public class File implements OneOfFile{
 	@Column(name = "DELETED")
 	private Boolean deleted;
 
-	public File(String fileId, String name, byte[] data) {
+	public File(UUID fileId, String name, byte[] data) {
 		super();
 		this.fileId = fileId;
 		this.name = name;

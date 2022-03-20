@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.filesboxx.ws.model.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "BELONGS_FOLDER_USER")
@@ -30,11 +33,11 @@ public class BelongsFolderUser {
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "BFU_ID")
-	private String bfuId;
+	private UUID bfuId;
 	@Column(name = "USER_ID")
-	private String userId;
+	private UUID userId;
 	@Column(name = "FOLDER_ID")
-	private String folderId;
+	private UUID folderId;
 	@Column(name = "DELETED")
 	private Boolean deleted;
 	

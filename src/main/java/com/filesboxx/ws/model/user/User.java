@@ -1,7 +1,6 @@
-package com.filesboxx.ws.model;
+package com.filesboxx.ws.model.user;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +13,8 @@ import com.google.gson.GsonBuilder;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "FILES_BOXX_USER",
 		uniqueConstraints = {
@@ -24,14 +25,14 @@ import io.swagger.annotations.ApiModelProperty;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements OneOfUser{
+public class User {
 
 	@Id
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@ApiModelProperty(example = "8a19cfc7-13a9-44a3-8f44-43e93aa732d3")
 	@Column(name = "USER_ID")
-	private String userId;
+	private UUID userId;
 	@ApiModelProperty(example = "Peric")
 	@Column(name = "FIRST_NAME")
 	private String firstName;
@@ -45,7 +46,6 @@ public class User implements OneOfUser{
 	@Column(name = "PASSWORD")
 	private String password;
 	@ApiModelProperty(example = "pera.peric@mail.com")
-	@Email(regexp=".*@.*\\..*", message = "Email should be valid.")
 	@Column(name = "EMAIL")
 	private String email;
 	@Column(name = "TOKEN")
@@ -56,5 +56,5 @@ public class User implements OneOfUser{
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(this);
 	}
-	
+
 }

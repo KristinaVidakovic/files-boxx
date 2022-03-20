@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ConversationServiceImpl implements ConversationService {
@@ -17,7 +18,7 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     @Override
-    public Optional<String> getChatId(String senderId, String recipientId, boolean createIfNotExist) {
+    public Optional<UUID> getChatId(UUID senderId, UUID recipientId, boolean createIfNotExist) {
         return conversationRepository
                 .findBySenderIdAndRecipientId(senderId, recipientId)
                 .map(Conversation::getChatId)
@@ -25,8 +26,8 @@ public class ConversationServiceImpl implements ConversationService {
                     if(!createIfNotExist) {
                         return  Optional.empty();
                     }
-                    String chatId =
-                            String.format("%s_%s", senderId, recipientId);
+                    UUID chatId =
+                            UUID.fromString(String.format("%s_%s", senderId, recipientId));
 
                     Conversation senderRecipient = Conversation
                             .builder()

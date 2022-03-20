@@ -3,6 +3,7 @@ package com.filesboxx.ws.service.file;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ public class FileServiceImpl implements FileService {
 	}
 	
 	@Override
-	public OneOfFile file(MultipartFile forwarded, String userId) {
+	public OneOfFile file(MultipartFile forwarded, UUID userId) {
 		
 		log.info("Called POST method for inserting new file.");
 		
@@ -85,7 +86,7 @@ public class FileServiceImpl implements FileService {
 	}
 	
 	@Override
-	public OneOfFile fileFolder(MultipartFile forwarded, String folderId) {
+	public OneOfFile fileFolder(MultipartFile forwarded, UUID folderId) {
 		
 		log.info("Called POST method for inserting new file.");
 		
@@ -194,7 +195,7 @@ public class FileServiceImpl implements FileService {
 	}
 	
 	@Override
-	public List<OneOfFile> files(String userId) {
+	public List<OneOfFile> files(UUID userId) {
 		
 		log.info("Called GET method for getting files by user ID.");
 		
@@ -232,7 +233,7 @@ public class FileServiceImpl implements FileService {
 	}
 	
 	@Override
-	public List<OneOfFile> filesFolder(String folderId) {
+	public List<OneOfFile> filesFolder(UUID folderId) {
 		
 		log.info("Called GET method for getting files from folder by user ID.");
 		
@@ -259,7 +260,7 @@ public class FileServiceImpl implements FileService {
 	}
 
 	@Override
-	public ResponseMessage deleteFile(String fileId) {
+	public ResponseMessage deleteFile(UUID fileId) {
 
 		log.info("Called DELETE method for deleting file by file ID.");
 

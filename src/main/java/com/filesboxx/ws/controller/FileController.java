@@ -1,6 +1,7 @@
 package com.filesboxx.ws.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,7 @@ public class FileController {
 	@RequestMapping(value = "/file/{userId}", method = RequestMethod.POST)
 	public ResponseEntity<OneOfFile> file(
 			@ApiParam(value = "Represents the file which should be inserted.", required = true) @RequestBody MultipartFile file, 
-			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable String userId){
+			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable UUID userId){
 		
 		OneOfFile responseFile = fileService.file(file, userId);
 		
@@ -54,7 +55,7 @@ public class FileController {
 	@RequestMapping(value = "/file-folder/{folderId}", method = RequestMethod.POST)
 	public ResponseEntity<OneOfFile> fileFolder(
 			@ApiParam(value = "Represents the file which should be inserted.", required = true) @RequestBody MultipartFile file, 
-			@ApiParam(value = "Value representing the unique folder identificator.", required = true) @PathVariable String folderId){
+			@ApiParam(value = "Value representing the unique folder identificator.", required = true) @PathVariable UUID folderId){
 		
 		OneOfFile responseFile = fileService.fileFolder(file, folderId);
 		
@@ -79,7 +80,7 @@ public class FileController {
 					@ApiResponse(code = 400, message = "BAD_REQUEST", response = ResponseMessage[].class)})
 	@RequestMapping(value = "/{userId}", method = RequestMethod.GET)
 	public ResponseEntity<List<OneOfFile>> files (
-			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable String userId) {
+			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable UUID userId) {
 		
 		List<OneOfFile> files = fileService.files(userId);
 		
@@ -92,7 +93,7 @@ public class FileController {
 					@ApiResponse(code = 400, message = "BAD_REQUEST", response = ResponseMessage[].class)})
 	@RequestMapping(value = "files-folder/{folderId}", method = RequestMethod.GET)
 	public ResponseEntity<List<OneOfFile>> filesFolder(
-			@ApiParam(value = "Value representing the unique folder identificator.", required = true) @PathVariable String folderId) {
+			@ApiParam(value = "Value representing the unique folder identificator.", required = true) @PathVariable UUID folderId) {
 		
 		List<OneOfFile> files = fileService.filesFolder(folderId);
 		
@@ -104,7 +105,7 @@ public class FileController {
 			@ApiResponse(code = 400, message = "BAD_REQUEST", response = ResponseMessage.class)})
 	@RequestMapping(value = "delete/{fileId}", method = RequestMethod.DELETE)
 	public ResponseEntity<ResponseMessage> delete(
-			@ApiParam(value = "Value representing the unique file identificator.", required = true) @PathVariable String fileId) {
+			@ApiParam(value = "Value representing the unique file identificator.", required = true) @PathVariable UUID fileId) {
 
 		ResponseMessage message = fileService.deleteFile(fileId);
 

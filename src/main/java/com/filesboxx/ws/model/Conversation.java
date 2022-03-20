@@ -8,11 +8,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.filesboxx.ws.model.user.User;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "CONVERSATION")
@@ -27,13 +31,13 @@ public class Conversation {
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "CONVERSATION_ID")
-	private String conversationId;
+	private UUID conversationId;
 	@Column(name = "SENDER_ID")
-	private String senderId;
+	private UUID senderId;
 	@Column(name = "RECIPIENT_ID")
-	private String recipientId;
+	private UUID recipientId;
 	@Column(name = "CHAT_ID")
-	private String chatId;
+	private UUID chatId;
 	
 	@OneToOne(targetEntity = User.class, cascade = CascadeType.ALL)
 	@JoinColumn(name = "SENDER_ID", referencedColumnName = "USER_ID", insertable = false, updatable = false)

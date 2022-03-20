@@ -1,9 +1,11 @@
 package com.filesboxx.ws.model;
 
 import java.security.Timestamp;
+import java.util.UUID;
 
 import javax.persistence.*;
 
+import com.filesboxx.ws.model.user.User;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -22,15 +24,15 @@ public class Message {
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "MESSAGE_ID")
-	private String messageId;
+	private UUID messageId;
 	@Column(name = "CHAT_ID")
-	private String chatId;
+	private UUID chatId;
 	@Column(name = "TEXT")
 	private String text;
 	@Column(name = "SENDER_ID")
-	private String senderId;
+	private UUID senderId;
 	@Column(name = "RECIPIENT_ID")
-	private String recipientId;
+	private UUID recipientId;
 	@Column(name = "STATUS")
 	private MessageStatus status;
 	@Column(name = "DATE_TIME")

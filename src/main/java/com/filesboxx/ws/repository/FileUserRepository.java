@@ -1,6 +1,7 @@
 package com.filesboxx.ws.repository;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -8,10 +9,10 @@ import org.springframework.stereotype.Repository;
 import com.filesboxx.ws.model.BelongsFileUser;
 
 @Repository
-public interface FileUserRepository extends JpaRepository<BelongsFileUser, String>{
+public interface FileUserRepository extends JpaRepository<BelongsFileUser, UUID>{
 
-	BelongsFileUser findByFileIdAndDeletedFalse(String fileId);
+	BelongsFileUser findByFileIdAndDeletedFalse(UUID fileId);
 
-	List<BelongsFileUser> findByUserId(String userId);
+	List<BelongsFileUser> findByUserId(UUID userId);
 
 }

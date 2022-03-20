@@ -1,6 +1,7 @@
 package com.filesboxx.ws.service.file;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,16 +11,16 @@ import com.filesboxx.ws.model.ResponseMessage;
 
 public interface FileService {
 
-	OneOfFile file(MultipartFile file, String userId);
+	OneOfFile file(MultipartFile file, UUID userId);
 	
-	OneOfFile fileFolder(MultipartFile file, String folderId);
+	OneOfFile fileFolder(MultipartFile file, UUID folderId);
 	
 	ResponseMessage updateLocation(Body request);
 	
-	List<OneOfFile> files(String userId);
+	List<OneOfFile> files(UUID userId);
 	
-	List<OneOfFile> filesFolder(String folderId);
+	List<OneOfFile> filesFolder(UUID folderId);
 
-	ResponseMessage deleteFile(String fileId);
+	ResponseMessage deleteFile(UUID fileId);
 
 }

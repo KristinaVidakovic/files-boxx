@@ -4,17 +4,18 @@ import com.filesboxx.ws.model.Message;
 import com.filesboxx.ws.model.MessageStatus;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface MessageService {
 
     Message save(Message chatMessage);
 
-    long countNewMessages(String senderId, String recipientId);
+    long countNewMessages(UUID senderId, UUID recipientId);
 
-    List<Message> findChatMessages(String senderId, String recipientId);
+    List<Message> findChatMessages(UUID senderId, UUID recipientId);
 
-    Message findById(String id) throws Exception;
+    Message findById(UUID id) throws Exception;
 
-    void updateStatuses(String senderId, String recipientId, MessageStatus status);
+    void updateStatuses(UUID senderId, UUID recipientId, MessageStatus status);
 
 }

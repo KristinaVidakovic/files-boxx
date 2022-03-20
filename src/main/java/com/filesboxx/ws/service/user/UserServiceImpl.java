@@ -1,21 +1,26 @@
 package com.filesboxx.ws.service.user;
 
+import com.filesboxx.ws.controller.users.UsersMapper;
+import com.filesboxx.ws.controller.users.dto.UserCreateDto;
+import com.filesboxx.ws.controller.users.dto.UserDto;
+import com.filesboxx.ws.controller.users.dto.UserSignInDto;
+import com.filesboxx.ws.controller.users.dto.UserUpdateDto;
+import com.filesboxx.ws.exeptions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.filesboxx.ws.model.BodySignIn;
-import com.filesboxx.ws.model.OneOfUser;
 import com.filesboxx.ws.model.ResponseMessage;
-import com.filesboxx.ws.model.User;
+import com.filesboxx.ws.model.user.User;
 import com.filesboxx.ws.repository.UserRepository;
 
 import io.jsonwebtoken.Jwts;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -28,92 +33,72 @@ public class UserServiceImpl implements UserService {
 		this.userRepo = userRepo;
 	}
 	
-	public OneOfUser user(User user) {
+	public UserDto create(UserCreateDto user) {
 		
 		log.info("Called POST method for registration new user.");
 		
-		ResponseMessage message = new ResponseMessage();
-		
-		if (user.getFirstName() == null || user.getLastName() == null || user.getUsername() == null || user.getPassword() == null || user.getEmail() == null) {
+		if (user.getFirstName() == null || user.getLastName() == null ||
+				user.getUsername() == null || user.getPassword() == null ||
+				user.getEmail() == null) {
 			log.error("All attributes must be forwarded.");
-			message.setMessage("All attributes must be forwarded.");
-			message.setStatus(HttpStatus.BAD_REQUEST);
-			return message;
+			throw new InvalidAttributesException();
 		}
 		
 		User exist = userRepo.findByUsername(user.getUsername());
 		
 		if (exist != null) {
 			log.error("User with forwarded username already exists.");
-			message.setMessage("User with forwarded username already exists.");
-			message.setStatus(HttpStatus.BAD_REQUEST);
-			return message;
+			throw new UserExistsException();
 		}
 		
-		userRepo.save(user);
+		User saved = userRepo.save(UsersMapper.toUser(user));
 		
 		log.info("New user registered with username: " + user.getUsername() + "!");
 		
-		return user;
+		return UsersMapper.toUserDto(saved);
 	}
 
 	@Override
-	public OneOfUser getUserByUserId(String userId) {
+	public UserDto getUserByUserId(UUID userId) {
 		
 		log.info("Called GET method for getting user by user ID.");
 		
-		ResponseMessage message = new ResponseMessage();
-		
 		if (userRepo.user(userId) == null) {
 			log.error("Forwarded user doesn't exists.");
-			message.setMessage("Forwarded user doesn't exists.");
-			message.setStatus(HttpStatus.BAD_REQUEST);
-			return message;
+			throw new InvalidUserException();
 		}
 		
 		User user = userRepo.findByUserId(userId);
 		
 		log.info("User found successfully!");
 		
-		return user;
+		return UsersMapper.toUserDto(user);
 	}
 
 	@Override
-	public OneOfUser getUserSignIn(BodySignIn body) {
+	public UserDto getUserSignIn(UserSignInDto dto) {
 
 		log.info("Called method for signIn.");
 
-		ResponseMessage message = new ResponseMessage();
-
-		if (body.getPassword() == null || body.getUsername() == null) {
-			log.error("Username and password should be forwarded.");
-			message.setMessage("Username and password should be forwarded.");
-			message.setStatus(HttpStatus.BAD_REQUEST);
-			return message;
+		if (dto.getPassword() == null || dto.getUsername() == null) {
+			log.error("All attributes must be forwarded.");
+			throw new InvalidAttributesException();
 		}
 
-		User user = userRepo.findByUsername(body.getUsername());
+		User user = userRepo.findByUsername(dto.getUsername());
 
 		if (user == null) {
 			log.error("User with forwarded username doesn't exists.");
-			message.setMessage("User with forwarded username doesn't exists.");
-			message.setStatus(HttpStatus.BAD_REQUEST);
-			return message;
+			throw new InvalidUserException();
 		}
 
-		if (!user.getPassword().equals(body.getPassword())) {
+		if (!user.getPassword().equals(dto.getPassword())) {
 			log.error("Wrong password!");
-			message.setMessage("Wrong password!");
-			message.setStatus(HttpStatus.BAD_REQUEST);
-			return message;
+			throw new InvalidPasswordException();
 
 		} else if (getTokens()) {
-			String userId = userRepo.findToken();
-			User signed = userRepo.findByUserId(userId);
-			log.error("User "+ signed.getFirstName() + " " + signed.getLastName() + " is already signed in!");
-			message.setMessage("User "+ signed.getFirstName() + " " + signed.getLastName() + " is already signed in!");
-			message.setStatus(HttpStatus.BAD_REQUEST);
-			return message;
+			log.error("Some user is already signed in.");
+			throw new UserSignInException();
 
 		} else {
 			String token = Jwts
@@ -122,9 +107,9 @@ public class UserServiceImpl implements UserService {
 					.setIssuedAt(new Date(System.currentTimeMillis()))
 					.compact();
 			user.setToken(token);
-			userRepo.save(user);
+			User saved = userRepo.save(user);
 			log.info("User successfully signed in!");
-			return user;
+			return UsersMapper.toUserDto(saved);
 		}
 	}
 
@@ -136,11 +121,10 @@ public class UserServiceImpl implements UserService {
 
 		if (!getTokens()) {
 			log.error("No user is signed in!");
-			message.setMessage("No user is signed in!");
-			message.setStatus(HttpStatus.BAD_REQUEST);
+			throw new UserSignOutException();
 
 		} else {
-			String userId = userRepo.findToken();
+			UUID userId = userRepo.findToken();
 			User user = userRepo.findByUserId(userId);
 			user.setToken(null);
 			userRepo.save(user);
@@ -152,6 +136,24 @@ public class UserServiceImpl implements UserService {
 
 		return message;
 
+	}
+
+	@Override
+	public UserDto update(UUID userId, UserUpdateDto dto) {
+
+		log.info("Called method for updating user.");
+
+		User user = userRepo.findByUserId(userId);
+
+		if (user == null) {
+			log.error("Forwarded user doesn't exists.");
+			throw new InvalidUserException();
+		}
+
+		User merged = UsersMapper.merge(user, dto);
+		User saved = userRepo.save(merged);
+
+		return UsersMapper.toUserDto(saved);
 	}
 
 	private boolean getTokens() {

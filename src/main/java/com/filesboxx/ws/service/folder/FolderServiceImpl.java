@@ -2,6 +2,7 @@ package com.filesboxx.ws.service.folder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +34,7 @@ public class FolderServiceImpl implements FolderService {
 	}
 
 	@Override
-	public OneOfFolder folder(Folder folder, String userId) {
+	public OneOfFolder folder(Folder folder, UUID userId) {
 
 		log.info("Called POST method for creating new folder.");
 		
@@ -71,7 +72,7 @@ public class FolderServiceImpl implements FolderService {
 	}
 	
 	@Override
-	public List<OneOfFolder> folders(String userId) {
+	public List<OneOfFolder> folders(UUID userId) {
 		
 		log.info("Called GET method for getting folders for forwarded user ID.");
 		
@@ -97,7 +98,7 @@ public class FolderServiceImpl implements FolderService {
 		}
 		
 		for (BelongsFolderUser bfu : belongs) {
-			String folderId = bfu.getFolderId();
+			UUID folderId = bfu.getFolderId();
 			Folder folder = folderRepo.findByFolderId(folderId);
 			list.add(folder);
 		}
@@ -108,7 +109,7 @@ public class FolderServiceImpl implements FolderService {
 	}
 
 	@Override
-	public ResponseMessage deleteFolder(String folderId) {
+	public ResponseMessage deleteFolder(UUID folderId) {
 
 		log.info("Called DELETE method for deleting folder by folder ID.");
 

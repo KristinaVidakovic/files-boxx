@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class MessageServiceImpl implements MessageService {
@@ -42,16 +43,16 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public long countNewMessages(String senderId, String recipientId) {
+    public long countNewMessages(UUID senderId, UUID recipientId) {
         return repository.countBySenderIdAndRecipientIdAndStatus(
                 senderId, recipientId, MessageStatus.RECEIVED);
     }
 
     @Override
-    public List<Message> findChatMessages(String senderId, String recipientId) {
+    public List<Message> findChatMessages(UUID senderId, UUID recipientId) {
         log.info("Method for finding chat started.");
 
-        Optional<String> chatId = conversationService.getChatId(senderId, recipientId, false);
+        Optional<UUID> chatId = conversationService.getChatId(senderId, recipientId, false);
 
         List<Message> messages =
                 chatId.map(repository::findByChatId).orElse(new ArrayList<>());
@@ -65,7 +66,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Message findById(String id) throws Exception {
+    public Message findById(UUID id) throws Exception {
         log.info("Method for getting message by message ID started.");
 
         return repository
@@ -80,7 +81,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void updateStatuses(String senderId, String recipientId, MessageStatus status) {
+    public void updateStatuses(UUID senderId, UUID recipientId, MessageStatus status) {
         log.info("Method for updating message status started.");
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);

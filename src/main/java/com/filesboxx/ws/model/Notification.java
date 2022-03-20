@@ -1,6 +1,7 @@
 package com.filesboxx.ws.model;
 
 import java.security.Timestamp;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.filesboxx.ws.model.user.User;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -29,9 +31,9 @@ public class Notification {
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "NOTIFICATION_ID")
-	private String notificationId;
+	private UUID notificationId;
 	@Column(name = "SENDER_ID")
-	private String senderId;
+	private UUID senderId;
 	@Column(name = "TEXT")
 	private String text;
 	@Column(name = "DATE_TIME")
@@ -41,7 +43,7 @@ public class Notification {
 	@JoinColumn(name = "SENDER_ID", referencedColumnName = "USER_ID", insertable = false, updatable = false)
 	private User user;
 
-	public Notification(String notificationId, String senderId, String text) {
+	public Notification(UUID notificationId, UUID senderId, String text) {
 		super();
 		this.notificationId = notificationId;
 		this.senderId = senderId;
