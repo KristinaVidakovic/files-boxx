@@ -1,10 +1,6 @@
 package com.filesboxx.ws.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 
 import lombok.AllArgsConstructor;
@@ -19,7 +15,11 @@ import com.google.gson.GsonBuilder;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
-@Table(name = "FILES_BOXX_USER")
+@Table(name = "FILES_BOXX_USER",
+		uniqueConstraints = {
+		@UniqueConstraint(columnNames = "username"),
+		@UniqueConstraint(columnNames = "email")
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -48,6 +48,8 @@ public class User implements OneOfUser{
 	@Email(regexp=".*@.*\\..*", message = "Email should be valid.")
 	@Column(name = "EMAIL")
 	private String email;
+	@Column(name = "TOKEN")
+	private String token;
 
 	@Override
 	public String toString() {

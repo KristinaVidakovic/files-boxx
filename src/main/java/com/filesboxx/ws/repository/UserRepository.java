@@ -16,4 +16,7 @@ public interface UserRepository extends JpaRepository<User, String>{
 	@Query("SELECT userId FROM User WHERE userId = ?1")
 	String user(String userId);
 
+	@Query("SELECT userId FROM User WHERE token is not null")
+	String findToken();
+
 }
