@@ -1,4 +1,4 @@
-package com.filesboxx.ws.model;
+package com.filesboxx.ws.model.file;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +26,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class File implements OneOfFile{
+public class File {
 
 	@Id
 	@GeneratedValue(generator = "UUID")

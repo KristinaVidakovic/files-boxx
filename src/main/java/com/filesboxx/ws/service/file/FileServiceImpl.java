@@ -3,8 +3,15 @@ package com.filesboxx.ws.service.file;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
+import com.filesboxx.ws.controller.files.FilesMapper;
+import com.filesboxx.ws.controller.files.dto.FileDto;
+import com.filesboxx.ws.controller.files.dto.FileListDto;
+import com.filesboxx.ws.controller.files.dto.FileLocationFolderDto;
+import com.filesboxx.ws.controller.files.dto.FileLocationUserDto;
+import com.filesboxx.ws.exceptions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,17 +19,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.filesboxx.ws.model.BelongsFileFolder;
-import com.filesboxx.ws.model.BelongsFileUser;
-import com.filesboxx.ws.model.Body;
-import com.filesboxx.ws.model.File;
-import com.filesboxx.ws.model.OneOfFile;
+import com.filesboxx.ws.model.connections.BelongsFileFolder;
+import com.filesboxx.ws.model.connections.BelongsFileUser;
+import com.filesboxx.ws.model.file.File;
 import com.filesboxx.ws.model.ResponseMessage;
-import com.filesboxx.ws.repository.FileFolderRepository;
-import com.filesboxx.ws.repository.FileRepository;
-import com.filesboxx.ws.repository.FileUserRepository;
+import com.filesboxx.ws.repository.connections.FileFolderRepository;
+import com.filesboxx.ws.repository.file.FileRepository;
+import com.filesboxx.ws.repository.connections.FileUserRepository;
 import com.filesboxx.ws.repository.FolderRepository;
-import com.filesboxx.ws.repository.UserRepository;
+import com.filesboxx.ws.repository.user.UserRepository;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -45,34 +50,30 @@ public class FileServiceImpl implements FileService {
 	}
 	
 	@Override
-	public OneOfFile file(MultipartFile forwarded, UUID userId) {
+	public FileDto file(MultipartFile forwarded, UUID userId) {
 		
 		log.info("Called POST method for inserting new file.");
-		
-		ResponseMessage message = new ResponseMessage();
 		
 		File file = new File();
 		
 		if (userRepo.user(userId) == null) {
 			log.error("Forwarded user doesn't exists.");
-			message.setMessage("Forwarded user doesn't exists.");
-			message.setStatus(HttpStatus.BAD_REQUEST);
-			return message;
+			throw new InvalidUserException();
 		}
-		
+
 		file.setName(forwarded.getOriginalFilename());
+
 		try {
 			file.setData(forwarded.getBytes());
 		} catch (IOException e) {
 			log.error("Error getting bytes from forwarded file.");
-			message.setMessage("Error getting bytes from forwarded file.");
-			message.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
 			e.printStackTrace();
-			return message;
+			throw new InvalidDataException();
 		}
 		
 		file.setDeleted(false);
-		fileRepo.save(file);
+		File saved = fileRepo.save(file);
+
 		log.info("File " + file.getName() + "entered!");
 		
 		BelongsFileUser belongs = new BelongsFileUser();
@@ -80,40 +81,36 @@ public class FileServiceImpl implements FileService {
 		belongs.setUserId(userId);
 		belongs.setDeleted(false);
 		fileUserRepo.save(belongs);
+
 		log.info("Inserted connection file-user!");
 	
-		return file;
+		return FilesMapper.toFileDto(saved);
 	}
 	
 	@Override
-	public OneOfFile fileFolder(MultipartFile forwarded, UUID folderId) {
+	public FileDto fileFolder(MultipartFile forwarded, UUID folderId) {
 		
 		log.info("Called POST method for inserting new file.");
-		
-		ResponseMessage message = new ResponseMessage();
 		
 		File file = new File();
 		
 		if (folderRepo.folder(folderId) == null) {
 			log.error("Forwarded folder doesn't exists.");
-			message.setMessage("Forwarded folder doesn't exists.");
-			message.setStatus(HttpStatus.BAD_REQUEST);
-			return message;
+			throw new InvalidFolderException();
 		}
 		
 		file.setName(forwarded.getOriginalFilename());
+
 		try {
 			file.setData(forwarded.getBytes());
 		} catch (IOException e) {
 			log.error("Error getting bytes from forwarded file.");
-			message.setMessage("Error getting bytes from forwarded file.");
-			message.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
 			e.printStackTrace();
-			return message;
+			throw new InvalidDataException();
 		}
 		
 		file.setDeleted(false);
-		fileRepo.save(file);
+		File saved = fileRepo.save(file);
 		log.info("File " + file.getName() + "entered!");
 		
 		BelongsFileFolder belongs = new BelongsFileFolder();
@@ -123,53 +120,55 @@ public class FileServiceImpl implements FileService {
 		fileFolderRepo.save(belongs);
 		log.info("Inserted connection file-folder!");
 	
-		return file;
+		return FilesMapper.toFileDto(saved);
 	}
 	
 	@Override
-	public ResponseMessage updateLocation(Body request) {
+	public ResponseMessage updateLocation(Optional<FileLocationUserDto> locationUserDto,
+										  Optional<FileLocationFolderDto> locationFolderDto) {
 		
 		log.info("Called PUT method for file location update.");
 		
 		ResponseMessage message = new ResponseMessage();
+
+		if (locationUserDto.isPresent()) {
 		
-		if (request.getUserId() != null && request.getFolderId() == null) {
-		
-			if (fileRepo.file(request.getFileId()) == null || userRepo.user(request.getUserId()) == null) {
-				log.error("File ID or user ID doesn't exists or are deleted.");
-				message.setMessage("Forwarded user ID or file ID doesn't exists or are deleted.");
-				message.setStatus(HttpStatus.BAD_REQUEST);
-				return message;
+			if (fileRepo.file(locationUserDto.get().getFileId()) == null) {
+				log.error("Forwarded file doesn't exists or is deleted.");
+				throw new InvalidFileException();
+			}
+
+			if (userRepo.user(locationUserDto.get().getUserId()) == null) {
+				log.error("Forwarded user doesn't exists.");
+				throw new InvalidUserException();
 			}
 			
-			BelongsFileFolder bff = fileFolderRepo.findByFileIdAndDeletedFalse(request.getFileId());
+			BelongsFileFolder bff = fileFolderRepo.findByFileIdAndDeletedFalse(locationUserDto.get().getFileId());
 			BelongsFileUser bfu = new BelongsFileUser();
-			bfu.setFileId(request.getFileId());
-			bfu.setUserId(request.getUserId());
+			bfu.setFileId(locationUserDto.get().getFileId());
+			bfu.setUserId(locationUserDto.get().getUserId());
 			bfu.setDeleted(false);
 			fileUserRepo.save(bfu);
 			log.info("Connection file-user added!");
 			bff.setDeleted(true);
 			fileFolderRepo.save(bff);
 			log.info("Connection file-folder updated!");
-			message.setStatus(HttpStatus.OK);
-			message.setMessage("Successfully changed file location.");
-
-			log.info("Executed PUT method.");
-			return message;
 
 		} else {
 			
-			if (fileRepo.file(request.getFileId()) == null || folderRepo.folder(request.getFolderId()) == null) {
-				log.error("File ID or folder ID doesn't exists or are deleted.");
-				message.setMessage("Forwarded folder ID or file ID doesn't exists or are deleted.");
-				message.setStatus(HttpStatus.BAD_REQUEST);
-				return message;
+			if (fileRepo.file(locationFolderDto.get().getFileId()) == null) {
+				log.error("Forwarded file doesn't exists or is deleted.");
+				throw new InvalidFileException();
+			}
+
+			if (folderRepo.folder(locationFolderDto.get().getFolderId()) == null) {
+				log.error("Forwarded folder doesn't exists or is deleted.");
+				throw new InvalidFolderException();
 			}
 			
-			BelongsFileUser bfu = fileUserRepo.findByFileIdAndDeletedFalse(request.getFileId());
+			BelongsFileUser bfu = fileUserRepo.findByFileIdAndDeletedFalse(locationFolderDto.get().getFileId());
 			if(bfu == null) {
-				BelongsFileFolder bff = fileFolderRepo.findByFileIdAndDeletedFalse(request.getFileId());
+				BelongsFileFolder bff = fileFolderRepo.findByFileIdAndDeletedFalse(locationFolderDto.get().getFileId());
 				bff.setDeleted(true);
 				fileFolderRepo.save(bff);
 				log.info("Connection file-user updated!");
@@ -179,48 +178,41 @@ public class FileServiceImpl implements FileService {
 				log.info("Connection file-user updated!");
 			}
 			BelongsFileFolder bff = new BelongsFileFolder();
-			bff.setFileId(request.getFileId());
-			bff.setFolderId(request.getFolderId());
+			bff.setFileId(locationFolderDto.get().getFileId());
+			bff.setFolderId(locationFolderDto.get().getFolderId());
 			bff.setDeleted(false);
 			fileFolderRepo.save(bff);
 			log.info("Connection file-folder added!");
 
-			message.setStatus(HttpStatus.OK);
-			message.setMessage("Successfully changed file location.");
-
-			log.info("Executed PUT method.");
-			return message;
 		}
+
+		message.setStatus(HttpStatus.OK);
+		message.setMessage("Successfully changed file location.");
+		log.info("Executed PUT method.");
+
+		return message;
 
 	}
 	
 	@Override
-	public List<OneOfFile> files(UUID userId) {
+	public FileListDto files(UUID userId) {
 		
 		log.info("Called GET method for getting files by user ID.");
-		
-		ResponseMessage message = new ResponseMessage();
-		List<OneOfFile> list = new ArrayList<>();
+
+		List<File> list = new ArrayList<>();
 		
 		if (userRepo.user(userId) == null) {
-			log.error("Forwarded user ID doesn't exists.");
-			message.setMessage("Forwarded user ID doesn't exists.");
-			message.setStatus(HttpStatus.BAD_REQUEST);
-			list.add(message);
-			return list;
+			log.error("Forwarded user doesn't exists.");
+			throw new InvalidUserException();
 		}
 		
 		List<BelongsFileUser> belongs = fileUserRepo.findByUserId(userId);
 		
 		if (belongs.isEmpty()) {
 			log.error("Doesn't exists files for forwarded user ID.");
-			message.setMessage("Doesn't exists files for forwarded user ID.");
-			message.setStatus(HttpStatus.NO_CONTENT);
-			list.add(message);
-			return list;
+			throw new InvalidArgumentException();
 		} 
-		
-		
+
 		for (BelongsFileUser bfu : belongs) {
 			if (!bfu.getDeleted() && !fileRepo.findByFileId(bfu.getFileId()).getDeleted()) {
 				list.add(fileRepo.findByFileId(bfu.getFileId()));
@@ -229,23 +221,19 @@ public class FileServiceImpl implements FileService {
 		
 		log.info("Successfully executed GET method.");
 		
-		return list;
+		return FilesMapper.toFileListDto(list);
 	}
 	
 	@Override
-	public List<OneOfFile> filesFolder(UUID folderId) {
+	public FileListDto filesFolder(UUID folderId) {
 		
 		log.info("Called GET method for getting files from folder by user ID.");
-		
-		ResponseMessage message = new ResponseMessage();
-		List<OneOfFile> list = new ArrayList<>();
+
+		List<File> list = new ArrayList<>();
 		
 		if (folderRepo.folder(folderId) == null) {
-			log.error("Forwarded folder ID doesn't exists.");
-			message.setMessage("Forwarded folder ID doesn't exists.");
-			message.setStatus(HttpStatus.BAD_REQUEST);
-			list.add(message);
-			return list;
+			log.error("Forwarded folder doesn't exists or is deleted.");
+			throw new InvalidFolderException();
 		}
 		
 		List<BelongsFileFolder> belongsFiles = fileFolderRepo.findByFolderId(folderId);
@@ -256,7 +244,7 @@ public class FileServiceImpl implements FileService {
 		
 		log.info("Method for getting files executed.");
 		
-		return list;
+		return FilesMapper.toFileListDto(list);
 	}
 
 	@Override
@@ -267,10 +255,8 @@ public class FileServiceImpl implements FileService {
 		ResponseMessage message = new ResponseMessage();
 
 		if (fileRepo.file(fileId) == null) {
-			log.error("File with forwarded file ID doesn't exists or is deleted.");
-			message.setMessage("File with forwarded file ID doesn't exists or is deleted.");
-			message.setStatus(HttpStatus.BAD_REQUEST);
-			return message;
+			log.error("Forwarded file doesn't exists or is deleted.");
+			throw new InvalidFileException();
 		}
 
 		File file = fileRepo.findByFileId(fileId);

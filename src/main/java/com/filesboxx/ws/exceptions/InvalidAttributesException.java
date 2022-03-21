@@ -1,22 +1,22 @@
-package com.filesboxx.ws.exeptions;
+package com.filesboxx.ws.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class InvalidPasswordException extends AppException {
+public class InvalidAttributesException extends AppException {
 
     public static final HttpStatus HTTP_STATUS = HttpStatus.BAD_REQUEST;
-    private static final String DEFAULT_MESSAGE = "Wrong password!";
+    private static final String DEFAULT_MESSAGE = "All attributes must be forwarded.";
 
     HttpStatus status = HTTP_STATUS;
 
-    public InvalidPasswordException() {
+    public InvalidAttributesException() {
         this(DEFAULT_MESSAGE);
     }
 
-    InvalidPasswordException(String message) {
+    InvalidAttributesException(String message) {
         super(HTTP_STATUS, message);
     }
 
@@ -34,6 +34,6 @@ public class InvalidPasswordException extends AppException {
 
     @Override
     String getErrorCode() {
-        return ErrorUtils.getErrorCode(getHttpStatus().value(), "Wrong password!");
+        return ErrorUtils.getErrorCode(getHttpStatus().value(), "All attributes must be forwarded.");
     }
 }

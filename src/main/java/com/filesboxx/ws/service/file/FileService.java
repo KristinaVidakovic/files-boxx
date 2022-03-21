@@ -1,25 +1,28 @@
 package com.filesboxx.ws.service.file;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
+import com.filesboxx.ws.controller.files.dto.FileDto;
+import com.filesboxx.ws.controller.files.dto.FileListDto;
+import com.filesboxx.ws.controller.files.dto.FileLocationFolderDto;
+import com.filesboxx.ws.controller.files.dto.FileLocationUserDto;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.filesboxx.ws.model.Body;
-import com.filesboxx.ws.model.OneOfFile;
 import com.filesboxx.ws.model.ResponseMessage;
 
 public interface FileService {
 
-	OneOfFile file(MultipartFile file, UUID userId);
+	FileDto file(MultipartFile file, UUID userId);
 	
-	OneOfFile fileFolder(MultipartFile file, UUID folderId);
+	FileDto fileFolder(MultipartFile file, UUID folderId);
 	
-	ResponseMessage updateLocation(Body request);
+	ResponseMessage updateLocation(Optional<FileLocationUserDto> locationUserDto,
+								   Optional<FileLocationFolderDto> locationFolderDto);
 	
-	List<OneOfFile> files(UUID userId);
+	FileListDto files(UUID userId);
 	
-	List<OneOfFile> filesFolder(UUID folderId);
+	FileListDto filesFolder(UUID folderId);
 
 	ResponseMessage deleteFile(UUID fileId);
 

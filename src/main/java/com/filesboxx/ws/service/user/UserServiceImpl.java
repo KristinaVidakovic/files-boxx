@@ -5,7 +5,7 @@ import com.filesboxx.ws.controller.users.dto.UserCreateDto;
 import com.filesboxx.ws.controller.users.dto.UserDto;
 import com.filesboxx.ws.controller.users.dto.UserSignInDto;
 import com.filesboxx.ws.controller.users.dto.UserUpdateDto;
-import com.filesboxx.ws.exeptions.*;
+import com.filesboxx.ws.exceptions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.filesboxx.ws.model.ResponseMessage;
 import com.filesboxx.ws.model.user.User;
-import com.filesboxx.ws.repository.UserRepository;
+import com.filesboxx.ws.repository.user.UserRepository;
 
 import io.jsonwebtoken.Jwts;
 

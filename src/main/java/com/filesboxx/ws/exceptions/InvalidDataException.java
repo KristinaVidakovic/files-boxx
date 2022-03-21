@@ -1,22 +1,22 @@
-package com.filesboxx.ws.exeptions;
+package com.filesboxx.ws.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class UserExistsException extends AppException {
+public class InvalidDataException extends AppException {
 
-    public static final HttpStatus HTTP_STATUS = HttpStatus.BAD_REQUEST;
-    private static final String DEFAULT_MESSAGE = "User with forwarded username already exists.";
+    public static final HttpStatus HTTP_STATUS = HttpStatus.INTERNAL_SERVER_ERROR;
+    private static final String DEFAULT_MESSAGE = "Error getting bytes from forwarded file.";
 
     HttpStatus status = HTTP_STATUS;
 
-    public UserExistsException() {
+    public InvalidDataException() {
         this(DEFAULT_MESSAGE);
     }
 
-    UserExistsException(String message) {
+    InvalidDataException(String message) {
         super(HTTP_STATUS, message);
     }
 
@@ -34,6 +34,6 @@ public class UserExistsException extends AppException {
 
     @Override
     String getErrorCode() {
-        return ErrorUtils.getErrorCode(getHttpStatus().value(), "User with forwarded username already exists.");
+        return ErrorUtils.getErrorCode(getHttpStatus().value(), "Error getting bytes from forwarded file.");
     }
 }

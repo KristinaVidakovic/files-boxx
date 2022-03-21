@@ -1,4 +1,4 @@
-package com.filesboxx.ws.model;
+package com.filesboxx.ws.model.connections;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.filesboxx.ws.model.file.File;
 import com.filesboxx.ws.model.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,12 +23,12 @@ import com.google.gson.GsonBuilder;
 import java.util.UUID;
 
 @Entity
-@Table(name = "BELONGS_FOLDER_USER")
+@Table(name = "BELONGS_FILE_USER")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class BelongsFolderUser {
+@NoArgsConstructor
+public class BelongsFileUser {
 
 	@Id
 	@GeneratedValue(generator = "UUID")
@@ -36,8 +37,8 @@ public class BelongsFolderUser {
 	private UUID bfuId;
 	@Column(name = "USER_ID")
 	private UUID userId;
-	@Column(name = "FOLDER_ID")
-	private UUID folderId;
+	@Column(name = "FILE_ID")
+	private UUID fileId;
 	@Column(name = "DELETED")
 	private Boolean deleted;
 	
@@ -45,9 +46,16 @@ public class BelongsFolderUser {
 	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID", insertable = false, updatable = false)
 	private User user;
 	
-	@OneToOne(targetEntity = Folder.class, cascade = CascadeType.ALL)
-	@JoinColumn(name = "FOLDER_ID", referencedColumnName = "FOLDER_ID", insertable = false, updatable = false)
-	private Folder folder;
+	@OneToOne(targetEntity = File.class, cascade = CascadeType.ALL)
+	@JoinColumn(name = "FILE_ID", referencedColumnName = "FILE_ID", insertable = false, updatable = false)
+	private File file;
+
+	public BelongsFileUser(UUID bfuId, UUID userId, UUID fileId) {
+		super();
+		this.bfuId = bfuId;
+		this.userId = userId;
+		this.fileId = fileId;
+	}
 
 	@Override
 	public String toString() {

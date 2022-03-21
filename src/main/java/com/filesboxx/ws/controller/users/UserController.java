@@ -4,7 +4,7 @@ import com.filesboxx.ws.controller.users.dto.UserCreateDto;
 import com.filesboxx.ws.controller.users.dto.UserDto;
 import com.filesboxx.ws.controller.users.dto.UserUpdateDto;
 import com.filesboxx.ws.controller.users.dto.UserSignInDto;
-import com.filesboxx.ws.exeptions.*;
+import com.filesboxx.ws.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

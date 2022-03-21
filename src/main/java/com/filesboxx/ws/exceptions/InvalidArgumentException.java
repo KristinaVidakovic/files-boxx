@@ -1,22 +1,22 @@
-package com.filesboxx.ws.exeptions;
+package com.filesboxx.ws.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class InvalidUserException extends AppException {
+public class InvalidArgumentException extends AppException {
 
     public static final HttpStatus HTTP_STATUS = HttpStatus.BAD_REQUEST;
-    private static final String DEFAULT_MESSAGE = "Forwarded user doesn't exists.";
+    private static final String DEFAULT_MESSAGE = "Invalid argument!";
 
     HttpStatus status = HTTP_STATUS;
 
-    public InvalidUserException() {
+    public InvalidArgumentException() {
         this(DEFAULT_MESSAGE);
     }
 
-    InvalidUserException(String message) {
+    InvalidArgumentException(String message) {
         super(HTTP_STATUS, message);
     }
 
@@ -34,6 +34,6 @@ public class InvalidUserException extends AppException {
 
     @Override
     String getErrorCode() {
-        return ErrorUtils.getErrorCode(getHttpStatus().value(), "Forwarded user ID doesn't exists.");
+        return ErrorUtils.getErrorCode(getHttpStatus().value(), "Invalid argument!");
     }
 }

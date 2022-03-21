@@ -10,13 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.filesboxx.ws.model.BelongsFolderUser;
+import com.filesboxx.ws.model.connections.BelongsFolderUser;
 import com.filesboxx.ws.model.Folder;
 import com.filesboxx.ws.model.OneOfFolder;
 import com.filesboxx.ws.model.ResponseMessage;
 import com.filesboxx.ws.repository.FolderRepository;
-import com.filesboxx.ws.repository.FolderUserRepository;
-import com.filesboxx.ws.repository.UserRepository;
+import com.filesboxx.ws.repository.connections.FolderUserRepository;
+import com.filesboxx.ws.repository.user.UserRepository;
 
 @Service
 public class FolderServiceImpl implements FolderService {

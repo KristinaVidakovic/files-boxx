@@ -1,22 +1,22 @@
-package com.filesboxx.ws.exeptions;
+package com.filesboxx.ws.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class UserSignInException extends AppException {
+public class UserExistsException extends AppException {
 
     public static final HttpStatus HTTP_STATUS = HttpStatus.BAD_REQUEST;
-    private static final String DEFAULT_MESSAGE = "Some user is already signed in.";
+    private static final String DEFAULT_MESSAGE = "User with forwarded username already exists.";
 
     HttpStatus status = HTTP_STATUS;
 
-    public UserSignInException() {
+    public UserExistsException() {
         this(DEFAULT_MESSAGE);
     }
 
-    UserSignInException(String message) {
+    UserExistsException(String message) {
         super(HTTP_STATUS, message);
     }
 
@@ -34,6 +34,6 @@ public class UserSignInException extends AppException {
 
     @Override
     String getErrorCode() {
-        return ErrorUtils.getErrorCode(getHttpStatus().value(), "Some user is already signed in.");
+        return ErrorUtils.getErrorCode(getHttpStatus().value(), "User with forwarded username already exists.");
     }
 }

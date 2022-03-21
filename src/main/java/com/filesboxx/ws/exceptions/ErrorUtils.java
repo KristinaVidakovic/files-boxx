@@ -1,4 +1,4 @@
-package com.filesboxx.ws.exeptions;
+package com.filesboxx.ws.exceptions;
 
 import org.springframework.http.HttpStatus;
 
