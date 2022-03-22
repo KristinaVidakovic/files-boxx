@@ -21,13 +21,14 @@ public class SwaggerConfig {
 
 	@Bean
     public Docket api() {
-           return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.basePackage("com.filesboxx.ws.controller"))
-                  .paths(PathSelectors.any()).paths(Predicates.not(PathSelectors.regex("/error.*"))).build().apiInfo(metaData());
+           return new Docket(DocumentationType.SWAGGER_2)
+                   .select().apis(RequestHandlerSelectors.basePackage("com.filesboxx.ws.controller"))
+                   .paths(PathSelectors.any())
+                   .paths(Predicates.not(PathSelectors.regex("/error.*"))).build().apiInfo(metaData());
     }
 
     @Bean
     public UiConfiguration uiConfig() {
-           // turn off external validation
            return UiConfigurationBuilder.builder().displayRequestDuration(true).validatorUrl("").build();
     }
 

@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.filesboxx.ws.model.ResponseMessage;
+import com.filesboxx.ws.model.response.ResponseMessage;
 import com.filesboxx.ws.model.user.User;
 import com.filesboxx.ws.repository.user.UserRepository;
 
@@ -24,6 +24,7 @@ import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
+
 	static Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
 	private final UserRepository userRepo;
@@ -160,5 +161,4 @@ public class UserServiceImpl implements UserService {
 		List<User> users = userRepo.findAll();
 		return users.stream().anyMatch(i -> i.getToken() != null);
 	}
-
 }

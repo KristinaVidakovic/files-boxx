@@ -9,7 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.filesboxx.ws.model.Folder;
+import com.filesboxx.ws.model.folder.Folder;
 import com.filesboxx.ws.model.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -55,5 +55,4 @@ public class BelongsFolderUser {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(this);
 	}
-	
 }

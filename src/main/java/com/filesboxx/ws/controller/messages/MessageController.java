@@ -1,7 +1,7 @@
-package com.filesboxx.ws.controller;
+package com.filesboxx.ws.controller.messages;
 
-import com.filesboxx.ws.model.Message;
-import com.filesboxx.ws.model.Notification;
+import com.filesboxx.ws.model.message.Message;
+import com.filesboxx.ws.model.notification.Notification;
 import com.filesboxx.ws.service.conversation.ConversationService;
 import com.filesboxx.ws.service.message.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,7 @@ import java.util.UUID;
 
 @Controller
 public class MessageController {
+
     private final SimpMessagingTemplate messagingTemplate;
     private final MessageService messageService;
     private final ConversationService conversationService;
@@ -66,4 +67,5 @@ public class MessageController {
         return ResponseEntity
                 .ok(messageService.findById(id));
     }
+
 }

@@ -1,4 +1,4 @@
-package com.filesboxx.ws.model;
+package com.filesboxx.ws.model.chat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

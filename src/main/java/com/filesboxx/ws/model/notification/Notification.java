@@ -1,4 +1,4 @@
-package com.filesboxx.ws.model;
+package com.filesboxx.ws.model.notification;
 
 import java.security.Timestamp;
 import java.util.UUID;

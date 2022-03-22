@@ -1,7 +1,7 @@
 package com.filesboxx.ws.service.conversation;
 
-import com.filesboxx.ws.model.Conversation;
-import com.filesboxx.ws.repository.ConversationRepository;
+import com.filesboxx.ws.model.conversation.Conversation;
+import com.filesboxx.ws.repository.conversation.ConversationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +10,7 @@ import java.util.UUID;
 
 @Service
 public class ConversationServiceImpl implements ConversationService {
+
     private final ConversationRepository conversationRepository;
 
     @Autowired
@@ -48,5 +49,4 @@ public class ConversationServiceImpl implements ConversationService {
                     return Optional.of(chatId);
                 });
     }
-
 }

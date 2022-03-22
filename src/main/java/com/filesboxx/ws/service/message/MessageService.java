@@ -1,7 +1,7 @@
 package com.filesboxx.ws.service.message;
 
-import com.filesboxx.ws.model.Message;
-import com.filesboxx.ws.model.MessageStatus;
+import com.filesboxx.ws.model.message.Message;
+import com.filesboxx.ws.model.message.MessageStatus;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,5 +17,4 @@ public interface MessageService {
     Message findById(UUID id) throws Exception;
 
     void updateStatuses(UUID senderId, UUID recipientId, MessageStatus status);
-
 }

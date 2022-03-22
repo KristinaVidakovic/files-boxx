@@ -9,11 +9,10 @@ import com.filesboxx.ws.model.file.File;
 import java.util.UUID;
 
 @Repository
-public interface FileRepository extends JpaRepository<File, UUID>{
+public interface FileRepository extends JpaRepository<File, UUID> {
 
 	File findByFileId(UUID fileId);
 	
 	@Query("SELECT fileId FROM File WHERE fileId = ?1 AND deleted = FALSE")
 	UUID file (UUID fileId);
-
 }

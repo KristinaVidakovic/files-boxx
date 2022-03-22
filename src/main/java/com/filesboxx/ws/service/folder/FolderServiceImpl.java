@@ -4,6 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.filesboxx.ws.controller.folder.FoldersMapper;
+import com.filesboxx.ws.controller.folder.dto.FolderCreateDto;
+import com.filesboxx.ws.controller.folder.dto.FolderDto;
+import com.filesboxx.ws.controller.folder.dto.FolderListDto;
+import com.filesboxx.ws.exceptions.FolderExistsException;
+import com.filesboxx.ws.exceptions.InvalidArgumentException;
+import com.filesboxx.ws.exceptions.InvalidFolderException;
+import com.filesboxx.ws.exceptions.InvalidUserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,15 +19,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.filesboxx.ws.model.connections.BelongsFolderUser;
-import com.filesboxx.ws.model.Folder;
-import com.filesboxx.ws.model.OneOfFolder;
-import com.filesboxx.ws.model.ResponseMessage;
-import com.filesboxx.ws.repository.FolderRepository;
-import com.filesboxx.ws.repository.connections.FolderUserRepository;
+import com.filesboxx.ws.model.folder.Folder;
+import com.filesboxx.ws.model.response.ResponseMessage;
+import com.filesboxx.ws.repository.folder.FolderRepository;
+import com.filesboxx.ws.repository.connection.FolderUserRepository;
 import com.filesboxx.ws.repository.user.UserRepository;
 
 @Service
 public class FolderServiceImpl implements FolderService {
+
 	static Logger log = LoggerFactory.getLogger(FolderServiceImpl.class);
 
 	private final FolderRepository folderRepo;
@@ -34,67 +42,54 @@ public class FolderServiceImpl implements FolderService {
 	}
 
 	@Override
-	public OneOfFolder folder(Folder folder, UUID userId) {
+	public FolderDto folder(FolderCreateDto dto, UUID userId) {
 
 		log.info("Called POST method for creating new folder.");
-		
-		ResponseMessage message = new ResponseMessage();
 
 		if (userRepo.user(userId) == null) {
 			log.error("Forwarded user doesn't exists.");
-			message.setMessage("Forwarded user doesn't exists.");
-			message.setStatus(HttpStatus.BAD_REQUEST);
-			return message;
+			throw new InvalidUserException();
 		}
 
-		Folder exists = folderRepo.findByName(folder.getName());
+		Folder exists = folderRepo.findByName(dto.getName());
 
 		if (exists != null) {
 			log.error("Folder with forwarded name already exists.");
-			message.setMessage("Folder with forwarded name already exists.");
-			message.setStatus(HttpStatus.BAD_REQUEST);
-			return null;
+			throw new FolderExistsException();
 		}
 
-		folder.setDeleted(false);
-		folderRepo.save(folder);
+		Folder saved = folderRepo.save(FoldersMapper.toFolder(dto));
 
-		log.info("Created folder " + folder.getName() + "!");
+		log.info("Created folder " + saved.getName() + "!");
 
 		BelongsFolderUser belongs = new BelongsFolderUser();
-		belongs.setFolderId(folder.getFolderId());
+		belongs.setFolderId(saved.getFolderId());
 		belongs.setUserId(userId);
 		belongs.setDeleted(false);
 		folderUserRepo.save(belongs);
 		log.info("Inserted connection folder-user!");
 
-		return folder;
+		return FoldersMapper.toFolderDto(saved);
 	}
 	
 	@Override
-	public List<OneOfFolder> folders(UUID userId) {
+	public FolderListDto folders(UUID userId) {
 		
 		log.info("Called GET method for getting folders for forwarded user ID.");
 		
 		ResponseMessage message =  new ResponseMessage();
-		List<OneOfFolder> list = new ArrayList<>();
+		List<Folder> list = new ArrayList<>();
 		
 		if (userRepo.user(userId) == null) {
-			log.error("Forwarded user ID doesn't exists or is deleted.");
-			message.setMessage("Forwarded user ID doesn't exists or is deleted.");
-			message.setStatus(HttpStatus.BAD_REQUEST);
-			list.add(message);
-			return list;
+			log.error("Forwarded user doesn't exists.");
+			throw new InvalidUserException();
 		}
 		
 		List<BelongsFolderUser> belongs = folderUserRepo.findByUserId(userId);
 		
 		if (belongs.isEmpty()) {
 			log.info("Forwarded user doesn't have folders.");
-			message.setMessage("Forwarded user doesn't have folders.");
-			message.setStatus(HttpStatus.NO_CONTENT);
-			list.add(message);
-			return list;
+			throw new InvalidArgumentException();
 		}
 		
 		for (BelongsFolderUser bfu : belongs) {
@@ -105,7 +100,7 @@ public class FolderServiceImpl implements FolderService {
 		
 		log.info("Method for getting folders executed.");
 		
-		return list;
+		return FoldersMapper.toFolderListDto(list);
 	}
 
 	@Override
@@ -116,10 +111,8 @@ public class FolderServiceImpl implements FolderService {
 		ResponseMessage message = new ResponseMessage();
 
 		if (folderRepo.folder(folderId) == null) {
-			log.error("Folder with forwarded folder ID doesn't exists or is deleted.");
-			message.setMessage("Folder with forwarded folder ID doesn't exists or is deleted.");
-			message.setStatus(HttpStatus.BAD_REQUEST);
-			return message;
+			log.error("Forwarded folder doesn't exists or is deleted.");
+			throw new InvalidFolderException();
 		}
 
 		BelongsFolderUser bfu = folderUserRepo.findByFolderIdAndDeletedFalse(folderId);
@@ -140,5 +133,4 @@ public class FolderServiceImpl implements FolderService {
 
 		return message;
 	}
-
 }

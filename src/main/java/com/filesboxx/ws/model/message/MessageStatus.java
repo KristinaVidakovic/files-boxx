@@ -1,4 +1,4 @@
-package com.filesboxx.ws.model;
+package com.filesboxx.ws.model.message;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.AllArgsConstructor;
@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum MessageStatus {
+
     RECEIVED("RECEIVED"),
     DELIVERED("DELIVERED");
 

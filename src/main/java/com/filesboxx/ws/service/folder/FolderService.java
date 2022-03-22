@@ -1,18 +1,17 @@
 package com.filesboxx.ws.service.folder;
 
-import java.util.List;
 import java.util.UUID;
 
-import com.filesboxx.ws.model.Folder;
-import com.filesboxx.ws.model.OneOfFolder;
-import com.filesboxx.ws.model.ResponseMessage;
+import com.filesboxx.ws.controller.folder.dto.FolderCreateDto;
+import com.filesboxx.ws.controller.folder.dto.FolderDto;
+import com.filesboxx.ws.controller.folder.dto.FolderListDto;
+import com.filesboxx.ws.model.response.ResponseMessage;
 
 public interface FolderService {
 
-	OneOfFolder folder(Folder folder, UUID userId);
+	FolderDto folder(FolderCreateDto folder, UUID userId);
 	
-	List<OneOfFolder> folders(UUID userId);
+	FolderListDto folders(UUID userId);
 
 	ResponseMessage deleteFolder(UUID folderId);
-
 }

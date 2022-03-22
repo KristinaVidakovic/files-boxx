@@ -1,4 +1,4 @@
-package com.filesboxx.ws.model;
+package com.filesboxx.ws.model.folder;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,7 +25,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Folder implements OneOfFolder{
+public class Folder {
 
 	@Id
 	@GeneratedValue(generator = "UUID")
@@ -39,12 +39,6 @@ public class Folder implements OneOfFolder{
 	@ApiModelProperty(example = "false")
 	@Column(name = "DELETED")
 	private Boolean deleted;
-
-	public Folder(UUID folderId, String name) {
-		super();
-		this.folderId = folderId;
-		this.name = name;
-	}
 
 	@Override
 	public String toString() {

@@ -56,5 +56,4 @@ public class User {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(this);
 	}
-
 }

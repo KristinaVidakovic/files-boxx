@@ -22,15 +22,16 @@ import org.springframework.web.multipart.MultipartFile;
 import com.filesboxx.ws.model.connections.BelongsFileFolder;
 import com.filesboxx.ws.model.connections.BelongsFileUser;
 import com.filesboxx.ws.model.file.File;
-import com.filesboxx.ws.model.ResponseMessage;
-import com.filesboxx.ws.repository.connections.FileFolderRepository;
+import com.filesboxx.ws.model.response.ResponseMessage;
+import com.filesboxx.ws.repository.connection.FileFolderRepository;
 import com.filesboxx.ws.repository.file.FileRepository;
-import com.filesboxx.ws.repository.connections.FileUserRepository;
-import com.filesboxx.ws.repository.FolderRepository;
+import com.filesboxx.ws.repository.connection.FileUserRepository;
+import com.filesboxx.ws.repository.folder.FolderRepository;
 import com.filesboxx.ws.repository.user.UserRepository;
 
 @Service
 public class FileServiceImpl implements FileService {
+
 	static Logger log = LoggerFactory.getLogger(FileServiceImpl.class);
 
 	private final FileRepository fileRepo;
@@ -284,5 +285,4 @@ public class FileServiceImpl implements FileService {
 
 		return message;
 	}
-
 }

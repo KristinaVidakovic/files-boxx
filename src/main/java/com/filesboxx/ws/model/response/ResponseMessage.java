@@ -1,4 +1,4 @@
-package com.filesboxx.ws.model;
+package com.filesboxx.ws.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import io.swagger.annotations.ApiModelProperty;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseMessage implements OneOfFolder {
+public class ResponseMessage {
 
 	@ApiModelProperty(example = "Forwarded object doesn't exists.")
 	private String message;
@@ -27,5 +27,4 @@ public class ResponseMessage implements OneOfFolder {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(this);
 	}
-	
 }

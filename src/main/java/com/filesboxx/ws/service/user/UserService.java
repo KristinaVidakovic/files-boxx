@@ -4,7 +4,7 @@ import com.filesboxx.ws.controller.users.dto.UserCreateDto;
 import com.filesboxx.ws.controller.users.dto.UserDto;
 import com.filesboxx.ws.controller.users.dto.UserSignInDto;
 import com.filesboxx.ws.controller.users.dto.UserUpdateDto;
-import com.filesboxx.ws.model.ResponseMessage;
+import com.filesboxx.ws.model.response.ResponseMessage;
 
 import java.util.UUID;
 

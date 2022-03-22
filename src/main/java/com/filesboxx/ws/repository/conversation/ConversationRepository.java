@@ -1,6 +1,6 @@
-package com.filesboxx.ws.repository;
+package com.filesboxx.ws.repository.conversation;
 
-import com.filesboxx.ws.model.Conversation;
+import com.filesboxx.ws.model.conversation.Conversation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,5 +11,4 @@ import java.util.UUID;
 public interface ConversationRepository extends JpaRepository<Conversation, UUID> {
 
     Optional<Conversation> findBySenderIdAndRecipientId(UUID senderId, UUID recipientId);
-
 }

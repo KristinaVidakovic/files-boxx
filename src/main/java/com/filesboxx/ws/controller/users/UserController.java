@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.filesboxx.ws.model.ResponseMessage;
+import com.filesboxx.ws.model.response.ResponseMessage;
 import com.filesboxx.ws.service.user.UserService;
 
 import io.swagger.annotations.ApiOperation;
@@ -23,6 +23,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+
 	private final UserService userService;
 
 	@Autowired

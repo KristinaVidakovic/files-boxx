@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.filesboxx.ws.model.ResponseMessage;
+import com.filesboxx.ws.model.response.ResponseMessage;
 import com.filesboxx.ws.service.file.FileService;
 
 import io.swagger.annotations.ApiOperation;
@@ -25,6 +25,7 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping("/files")
 public class FileController {
+
 	private final FileService fileService;
 
 	@Autowired
@@ -159,4 +160,5 @@ public class FileController {
 		}
 
 	}
+
 }

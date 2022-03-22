@@ -1,4 +1,4 @@
-package com.filesboxx.ws.controller.users.dto;
+package com.filesboxx.ws.controller.folder.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,13 +9,11 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserSignInDto {
+@NoArgsConstructor
+public class FolderCreateDto {
 
     @NotNull
-    String username;
-    @NotNull
-    String password;
+    String name;
 
 }

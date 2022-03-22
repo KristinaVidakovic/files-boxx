@@ -3,6 +3,7 @@ package com.filesboxx.ws.exceptions;
 import org.springframework.http.HttpStatus;
 
 public class ErrorUtils {
+
     private static final String UNDER_SCORE = "_";
 
     static String getErrorCode(int httpStatusCode) {

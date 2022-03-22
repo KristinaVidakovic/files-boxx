@@ -1,4 +1,4 @@
-package com.filesboxx.ws.repository.connections;
+package com.filesboxx.ws.repository.connection;
 
 import java.util.List;
 import java.util.UUID;
@@ -9,10 +9,9 @@ import org.springframework.stereotype.Repository;
 import com.filesboxx.ws.model.connections.BelongsFolderUser;
 
 @Repository
-public interface FolderUserRepository extends JpaRepository<BelongsFolderUser, UUID>{
+public interface FolderUserRepository extends JpaRepository<BelongsFolderUser, UUID> {
 
 	List<BelongsFolderUser> findByUserId(UUID userId);
 
 	BelongsFolderUser findByFolderIdAndDeletedFalse(UUID folderId);
-
 }

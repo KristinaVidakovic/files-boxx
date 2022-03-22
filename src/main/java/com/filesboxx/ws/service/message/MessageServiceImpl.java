@@ -1,8 +1,8 @@
 package com.filesboxx.ws.service.message;
 
-import com.filesboxx.ws.model.Message;
-import com.filesboxx.ws.model.MessageStatus;
-import com.filesboxx.ws.repository.MessageRepository;
+import com.filesboxx.ws.model.message.Message;
+import com.filesboxx.ws.model.message.MessageStatus;
+import com.filesboxx.ws.repository.message.MessageRepository;
 import com.filesboxx.ws.service.conversation.ConversationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +18,7 @@ import java.util.UUID;
 
 @Service
 public class MessageServiceImpl implements MessageService {
+
     static Logger log = LoggerFactory.getLogger(MessageServiceImpl.class);
 
     private final MessageRepository repository;
@@ -92,5 +93,4 @@ public class MessageServiceImpl implements MessageService {
             log.info("Message status successfully updated.");
         } else log.error("Failed updating message status.");
     }
-
 }

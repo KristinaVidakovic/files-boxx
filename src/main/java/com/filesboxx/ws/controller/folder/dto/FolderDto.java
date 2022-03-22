@@ -1,22 +1,19 @@
-package com.filesboxx.ws.controller.files.dto;
+package com.filesboxx.ws.controller.folder.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class FileLocationFolderDto {
+public class FolderDto {
 
-    @NotNull
-    UUID fileId;
-    @NotNull
     UUID folderId;
+    String name;
 
 }

@@ -9,7 +9,7 @@ import com.filesboxx.ws.model.user.User;
 import java.util.UUID;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, UUID>{
+public interface UserRepository extends JpaRepository<User, UUID> {
 
 	User findByUsername(String username);
 	
@@ -20,5 +20,4 @@ public interface UserRepository extends JpaRepository<User, UUID>{
 
 	@Query("SELECT userId FROM User WHERE token is not null")
 	UUID findToken();
-
 }

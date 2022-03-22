@@ -1,15 +1,15 @@
-package com.filesboxx.ws.repository;
+package com.filesboxx.ws.repository.folder;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.filesboxx.ws.model.Folder;
+import com.filesboxx.ws.model.folder.Folder;
 
 import java.util.UUID;
 
 @Repository
-public interface FolderRepository extends JpaRepository<Folder, UUID>{
+public interface FolderRepository extends JpaRepository<Folder, UUID> {
 
 	Folder findByName (String name);
 
@@ -17,5 +17,4 @@ public interface FolderRepository extends JpaRepository<Folder, UUID>{
 	
 	@Query("SELECT folderId FROM Folder WHERE folderId = ?1 AND deleted = FALSE")
 	UUID folder (UUID folderId);
-
 }

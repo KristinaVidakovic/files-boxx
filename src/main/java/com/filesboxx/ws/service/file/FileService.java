@@ -9,7 +9,7 @@ import com.filesboxx.ws.controller.files.dto.FileLocationFolderDto;
 import com.filesboxx.ws.controller.files.dto.FileLocationUserDto;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.filesboxx.ws.model.ResponseMessage;
+import com.filesboxx.ws.model.response.ResponseMessage;
 
 public interface FileService {
 
@@ -25,5 +25,4 @@ public interface FileService {
 	FileListDto filesFolder(UUID folderId);
 
 	ResponseMessage deleteFile(UUID fileId);
-
 }
