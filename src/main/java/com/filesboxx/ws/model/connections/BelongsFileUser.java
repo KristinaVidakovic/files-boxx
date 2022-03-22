@@ -50,17 +50,9 @@ public class BelongsFileUser {
 	@JoinColumn(name = "FILE_ID", referencedColumnName = "FILE_ID", insertable = false, updatable = false)
 	private File file;
 
-	public BelongsFileUser(UUID bfuId, UUID userId, UUID fileId) {
-		super();
-		this.bfuId = bfuId;
-		this.userId = userId;
-		this.fileId = fileId;
-	}
-
 	@Override
 	public String toString() {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(this);
 	}
-	
 }

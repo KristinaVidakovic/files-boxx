@@ -44,13 +44,6 @@ public class File {
 	@Column(name = "DELETED")
 	private Boolean deleted;
 
-	public File(UUID fileId, String name, byte[] data) {
-		super();
-		this.fileId = fileId;
-		this.name = name;
-		this.data = data;
-	}
-
 	@Override
 	public String toString() {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();

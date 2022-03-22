@@ -6,5 +6,4 @@ import java.util.UUID;
 public interface ConversationService {
 
     Optional<UUID> getChatId(UUID senderId, UUID recipientId, boolean createIfNotExist);
-
 }

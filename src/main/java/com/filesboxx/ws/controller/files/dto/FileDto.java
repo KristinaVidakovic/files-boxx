@@ -14,11 +14,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class FileDto {
 
-    @NotNull
     UUID fileId;
-    @NotNull
     String name;
-    @NotNull
     byte[] data;
 
 }
