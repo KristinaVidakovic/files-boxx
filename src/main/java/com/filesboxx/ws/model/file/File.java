@@ -31,16 +31,13 @@ public class File {
 	@Id
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-	@ApiModelProperty(example = "cb61913d-d44f-4378-9488-5bcda7e2dbbb")
 	@Column(name = "FILE_ID")
 	private UUID fileId;
-	@ApiModelProperty(example = "FilesBoxx - servisi.xlsx")
 	@Column(name = "NAME")
 	private String name;
 	@Column(name = "DATA")
 	@Lob
 	private byte[] data;
-	@ApiModelProperty(example = "false")
 	@Column(name = "DELETED")
 	private Boolean deleted;
 

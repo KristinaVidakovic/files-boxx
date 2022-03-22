@@ -1,5 +1,6 @@
 package com.filesboxx.ws.controller.folder.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class FolderListDto {
 
+    @ApiModelProperty(example = "2")
     Long count;
     List<FolderDto> items;
 

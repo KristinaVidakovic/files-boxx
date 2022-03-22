@@ -30,22 +30,16 @@ public class User {
 	@Id
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-	@ApiModelProperty(example = "8a19cfc7-13a9-44a3-8f44-43e93aa732d3")
 	@Column(name = "USER_ID")
 	private UUID userId;
-	@ApiModelProperty(example = "Peric")
 	@Column(name = "FIRST_NAME")
 	private String firstName;
-	@ApiModelProperty(example = "Pera")
 	@Column(name = "LAST_NAME")
 	private String lastName;
-	@ApiModelProperty(example = "peraperic")
 	@Column(name = "USERNAME")
 	private String username;
-	@ApiModelProperty(example = "pera123")
 	@Column(name = "PASSWORD")
 	private String password;
-	@ApiModelProperty(example = "pera.peric@mail.com")
 	@Column(name = "EMAIL")
 	private String email;
 	@Column(name = "TOKEN")

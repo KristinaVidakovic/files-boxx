@@ -30,13 +30,10 @@ public class Folder {
 	@Id
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-	@ApiModelProperty(example = "11e06451-5fb8-46c4-9050-5c5f605320c6")
 	@Column(name = "FOLDER_ID")
 	private UUID folderId;
-	@ApiModelProperty(example = "New folder")
 	@Column(name = "NAME")
 	private String name;
-	@ApiModelProperty(example = "false")
 	@Column(name = "DELETED")
 	private Boolean deleted;
 
