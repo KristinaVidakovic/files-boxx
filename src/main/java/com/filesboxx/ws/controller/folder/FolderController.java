@@ -58,8 +58,7 @@ public class FolderController {
 	@ApiOperation(value = "Method for getting list of folders by user ID.")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "OK", response = FolderListDto.class),
-			@ApiResponse(code = 400, message = "BAD_REQUEST", response = InvalidUserException.class),
-			@ApiResponse(code = 400, message = "BAD_REQUEST", response = InvalidArgumentException.class)
+			@ApiResponse(code = 400, message = "BAD_REQUEST", response = InvalidUserException.class)
 	})
 	@GetMapping(value = "/{userId}")
 	public ResponseEntity folders (
@@ -70,8 +69,6 @@ public class FolderController {
 			return new ResponseEntity(folders, HttpStatus.OK);
 		} catch (InvalidUserException exception) {
 			return new ResponseEntity(exception, InvalidUserException.HTTP_STATUS);
-		} catch (InvalidArgumentException exception) {
-			return new ResponseEntity(exception, InvalidArgumentException.HTTP_STATUS);
 		}
 
 	}

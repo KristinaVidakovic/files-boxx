@@ -13,5 +13,5 @@ public interface FileFolderRepository extends JpaRepository<BelongsFileFolder, U
 
 	BelongsFileFolder findByFileIdAndDeletedFalse(UUID fileId);
 	
-	List<BelongsFileFolder> findByFolderId(UUID folderId);
+	List<BelongsFileFolder> findByFolderIdAndDeletedFalse(UUID folderId);
 }

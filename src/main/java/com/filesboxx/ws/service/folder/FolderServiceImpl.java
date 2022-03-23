@@ -51,12 +51,14 @@ public class FolderServiceImpl implements FolderService {
 			throw new InvalidUserException();
 		}
 
-		Folder exists = folderRepo.findByName(dto.getName());
+		List<BelongsFolderUser> folders = folderUserRepo.findByUserIdAndDeletedFalse(userId);
 
-		if (exists != null) {
-			log.error("Folder with forwarded name already exists.");
-			throw new FolderExistsException();
-		}
+		folders.forEach(i -> {
+			if (folderRepo.findByFolderId(i.getFolderId()).getName().equals(dto.getName())) {
+				log.error("Folder with forwarded name already exists.");
+				throw new FolderExistsException();
+			}
+		});
 
 		Folder saved = folderRepo.save(FoldersMapper.toFolder(dto));
 
@@ -76,8 +78,7 @@ public class FolderServiceImpl implements FolderService {
 	public FolderListDto folders(UUID userId) {
 		
 		log.info("Called GET method for getting folders for forwarded user ID.");
-		
-		ResponseMessage message =  new ResponseMessage();
+
 		List<Folder> list = new ArrayList<>();
 		
 		if (userRepo.user(userId) == null) {
@@ -85,12 +86,7 @@ public class FolderServiceImpl implements FolderService {
 			throw new InvalidUserException();
 		}
 		
-		List<BelongsFolderUser> belongs = folderUserRepo.findByUserId(userId);
-		
-		if (belongs.isEmpty()) {
-			log.info("Forwarded user doesn't have folders.");
-			throw new InvalidArgumentException();
-		}
+		List<BelongsFolderUser> belongs = folderUserRepo.findByUserIdAndDeletedFalse(userId);
 		
 		for (BelongsFolderUser bfu : belongs) {
 			UUID folderId = bfu.getFolderId();

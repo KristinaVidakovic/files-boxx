@@ -208,11 +208,6 @@ public class FileServiceImpl implements FileService {
 		}
 		
 		List<BelongsFileUser> belongs = fileUserRepo.findByUserId(userId);
-		
-		if (belongs.isEmpty()) {
-			log.error("Doesn't exists files for forwarded user ID.");
-			throw new InvalidArgumentException();
-		} 
 
 		for (BelongsFileUser bfu : belongs) {
 			if (!bfu.getDeleted() && !fileRepo.findByFileId(bfu.getFileId()).getDeleted()) {
@@ -228,7 +223,7 @@ public class FileServiceImpl implements FileService {
 	@Override
 	public FileListDto filesFolder(UUID folderId) {
 		
-		log.info("Called GET method for getting files from folder by user ID.");
+		log.info("Called GET method for getting files from folder by folder ID.");
 
 		List<File> list = new ArrayList<>();
 		
@@ -237,7 +232,7 @@ public class FileServiceImpl implements FileService {
 			throw new InvalidFolderException();
 		}
 		
-		List<BelongsFileFolder> belongsFiles = fileFolderRepo.findByFolderId(folderId);
+		List<BelongsFileFolder> belongsFiles = fileFolderRepo.findByFolderIdAndDeletedFalse(folderId);
 		
 		for (BelongsFileFolder bff: belongsFiles) {
 			list.add(fileRepo.findByFileId(bff.getFileId()));

@@ -107,7 +107,6 @@ public class FileController {
 	@ApiOperation(value = "Method for getting files, outside the folders, by user ID.")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "OK", response = FileListDto.class),
-			@ApiResponse(code = 400, message = "BAD_REQUEST", response = InvalidArgumentException.class),
 			@ApiResponse(code = 400, message = "BAD_REQUEST", response = InvalidUserException.class)
 	})
 	@GetMapping(value = "/{userId}")
@@ -117,8 +116,6 @@ public class FileController {
 		try {
 			FileListDto files = fileService.files(userId);
 			return new ResponseEntity(files, HttpStatus.OK);
-		} catch (InvalidArgumentException exception) {
-			return new ResponseEntity(exception, InvalidArgumentException.HTTP_STATUS);
 		} catch (InvalidUserException exception) {
 			return new ResponseEntity(exception, InvalidUserException.HTTP_STATUS);
 		}
@@ -130,7 +127,7 @@ public class FileController {
 			@ApiResponse(code = 200, message = "OK", response = FileListDto.class),
 			@ApiResponse(code = 400, message = "BAD_REQUEST", response = InvalidFolderException.class)
 	})
-	@GetMapping(value = "/{folderId}")
+	@GetMapping(value = "/folder/{folderId}")
 	public ResponseEntity filesFolder(
 			@ApiParam(value = "Value representing the unique folder identificator.", required = true) @PathVariable UUID folderId) {
 
