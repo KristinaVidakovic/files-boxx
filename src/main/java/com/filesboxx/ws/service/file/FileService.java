@@ -1,12 +1,8 @@
 package com.filesboxx.ws.service.file;
 
-import java.util.Optional;
 import java.util.UUID;
 
-import com.filesboxx.ws.controller.files.dto.FileDto;
-import com.filesboxx.ws.controller.files.dto.FileListDto;
-import com.filesboxx.ws.controller.files.dto.FileLocationFolderDto;
-import com.filesboxx.ws.controller.files.dto.FileLocationUserDto;
+import com.filesboxx.ws.controller.files.dto.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.filesboxx.ws.model.response.ResponseMessage;
@@ -17,8 +13,7 @@ public interface FileService {
 	
 	FileDto fileFolder(MultipartFile file, UUID folderId);
 	
-	ResponseMessage updateLocation(Optional<FileLocationUserDto> locationUserDto,
-								   Optional<FileLocationFolderDto> locationFolderDto);
+	ResponseMessage updateLocation(FileLocationDto dto);
 	
 	FileListDto files(UUID userId);
 	

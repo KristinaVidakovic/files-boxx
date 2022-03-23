@@ -3,14 +3,10 @@ package com.filesboxx.ws.service.file;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import com.filesboxx.ws.controller.files.FilesMapper;
-import com.filesboxx.ws.controller.files.dto.FileDto;
-import com.filesboxx.ws.controller.files.dto.FileListDto;
-import com.filesboxx.ws.controller.files.dto.FileLocationFolderDto;
-import com.filesboxx.ws.controller.files.dto.FileLocationUserDto;
+import com.filesboxx.ws.controller.files.dto.*;
 import com.filesboxx.ws.exceptions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,29 +121,28 @@ public class FileServiceImpl implements FileService {
 	}
 	
 	@Override
-	public ResponseMessage updateLocation(Optional<FileLocationUserDto> locationUserDto,
-										  Optional<FileLocationFolderDto> locationFolderDto) {
+	public ResponseMessage updateLocation(FileLocationDto dto) {
 		
 		log.info("Called PUT method for file location update.");
 		
 		ResponseMessage message = new ResponseMessage();
 
-		if (locationUserDto.isPresent()) {
+		if (dto.getLocationUser() != null) {
 		
-			if (fileRepo.file(locationUserDto.get().getFileId()) == null) {
+			if (fileRepo.file(dto.getLocationUser().getFileId()) == null) {
 				log.error("Forwarded file doesn't exists or is deleted.");
 				throw new InvalidFileException();
 			}
 
-			if (userRepo.user(locationUserDto.get().getUserId()) == null) {
+			if (userRepo.user(dto.getLocationUser().getUserId()) == null) {
 				log.error("Forwarded user doesn't exists.");
 				throw new InvalidUserException();
 			}
 			
-			BelongsFileFolder bff = fileFolderRepo.findByFileIdAndDeletedFalse(locationUserDto.get().getFileId());
+			BelongsFileFolder bff = fileFolderRepo.findByFileIdAndDeletedFalse(dto.getLocationUser().getFileId());
 			BelongsFileUser bfu = new BelongsFileUser();
-			bfu.setFileId(locationUserDto.get().getFileId());
-			bfu.setUserId(locationUserDto.get().getUserId());
+			bfu.setFileId(dto.getLocationUser().getFileId());
+			bfu.setUserId(dto.getLocationUser().getUserId());
 			bfu.setDeleted(false);
 			fileUserRepo.save(bfu);
 			log.info("Connection file-user added!");
@@ -157,19 +152,19 @@ public class FileServiceImpl implements FileService {
 
 		} else {
 			
-			if (fileRepo.file(locationFolderDto.get().getFileId()) == null) {
+			if (fileRepo.file(dto.getLocationFolder().getFileId()) == null) {
 				log.error("Forwarded file doesn't exists or is deleted.");
 				throw new InvalidFileException();
 			}
 
-			if (folderRepo.folder(locationFolderDto.get().getFolderId()) == null) {
+			if (folderRepo.folder(dto.getLocationFolder().getFolderId()) == null) {
 				log.error("Forwarded folder doesn't exists or is deleted.");
 				throw new InvalidFolderException();
 			}
 			
-			BelongsFileUser bfu = fileUserRepo.findByFileIdAndDeletedFalse(locationFolderDto.get().getFileId());
+			BelongsFileUser bfu = fileUserRepo.findByFileIdAndDeletedFalse(dto.getLocationFolder().getFileId());
 			if(bfu == null) {
-				BelongsFileFolder bff = fileFolderRepo.findByFileIdAndDeletedFalse(locationFolderDto.get().getFileId());
+				BelongsFileFolder bff = fileFolderRepo.findByFileIdAndDeletedFalse(dto.getLocationFolder().getFileId());
 				bff.setDeleted(true);
 				fileFolderRepo.save(bff);
 				log.info("Connection file-user updated!");
@@ -179,8 +174,8 @@ public class FileServiceImpl implements FileService {
 				log.info("Connection file-user updated!");
 			}
 			BelongsFileFolder bff = new BelongsFileFolder();
-			bff.setFileId(locationFolderDto.get().getFileId());
-			bff.setFolderId(locationFolderDto.get().getFolderId());
+			bff.setFileId(dto.getLocationFolder().getFileId());
+			bff.setFolderId(dto.getLocationFolder().getFolderId());
 			bff.setDeleted(false);
 			fileFolderRepo.save(bff);
 			log.info("Connection file-folder added!");

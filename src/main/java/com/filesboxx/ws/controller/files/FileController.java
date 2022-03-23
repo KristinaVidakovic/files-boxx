@@ -3,10 +3,7 @@ package com.filesboxx.ws.controller.files;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.filesboxx.ws.controller.files.dto.FileDto;
-import com.filesboxx.ws.controller.files.dto.FileListDto;
-import com.filesboxx.ws.controller.files.dto.FileLocationFolderDto;
-import com.filesboxx.ws.controller.files.dto.FileLocationUserDto;
+import com.filesboxx.ws.controller.files.dto.*;
 import com.filesboxx.ws.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -86,13 +83,11 @@ public class FileController {
 	})
 	@PutMapping(value = "/change-location")
 	public ResponseEntity updateLocation(
-			@ApiParam(value = "JSON object representing change location from folder request.")
-				@RequestBody Optional<FileLocationUserDto> locationUserDto,
-			@ApiParam(value = "JSON object representing change location to folder request.")
-				@RequestBody Optional<FileLocationFolderDto> locationFolderDto) {
+			@ApiParam(value = "JSON object representing change location.")
+				@RequestBody FileLocationDto dto) {
 
 		try {
-			ResponseMessage message = fileService.updateLocation(locationUserDto, locationFolderDto);
+			ResponseMessage message = fileService.updateLocation(dto);
 			return new ResponseEntity(message, message.getStatus());
 		} catch (InvalidFileException exception) {
 			return new ResponseEntity(exception, InvalidFileException.HTTP_STATUS);
