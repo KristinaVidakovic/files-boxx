@@ -1,6 +1,5 @@
 package com.filesboxx.ws.controller.files;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import com.filesboxx.ws.controller.files.dto.*;
@@ -37,12 +36,12 @@ public class FileController {
 			@ApiResponse(code = 500, message = "INTERNAL_SERVER_ERROR", response = InvalidDataException.class)
 	})
 	@PostMapping(value = "/{userId}")
-	public ResponseEntity file(
+	public ResponseEntity save(
 			@ApiParam(value = "Represents the file which should be inserted.", required = true) @RequestBody MultipartFile file, 
 			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable UUID userId){
 
 		try {
-			FileDto responseFile = fileService.file(file, userId);
+			FileDto responseFile = fileService.save(file, userId);
 			return new ResponseEntity(responseFile, HttpStatus.CREATED);
 		} catch (InvalidUserException exception) {
 			return new ResponseEntity(exception, InvalidUserException.HTTP_STATUS);
@@ -59,12 +58,12 @@ public class FileController {
 			@ApiResponse(code = 500, message = "INTERNAL_SERVER_ERROR", response = InvalidDataException.class)
 	})
 	@PostMapping(value = "/folder/{folderId}")
-	public ResponseEntity fileFolder(
+	public ResponseEntity saveFile(
 			@ApiParam(value = "Represents the file which should be inserted.", required = true) @RequestBody MultipartFile file, 
 			@ApiParam(value = "Value representing the unique folder identificator.", required = true) @PathVariable UUID folderId){
 
 		try {
-			FileDto responseFile = fileService.fileFolder(file, folderId);
+			FileDto responseFile = fileService.saveFile(file, folderId);
 			return new ResponseEntity(responseFile, HttpStatus.CREATED);
 		} catch (InvalidFolderException exception) {
 			return new ResponseEntity(exception, InvalidFolderException.HTTP_STATUS);
@@ -105,11 +104,11 @@ public class FileController {
 			@ApiResponse(code = 400, message = "BAD_REQUEST", response = InvalidUserException.class)
 	})
 	@GetMapping(value = "/{userId}")
-	public ResponseEntity files (
+	public ResponseEntity list (
 			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable UUID userId) {
 
 		try {
-			FileListDto files = fileService.files(userId);
+			FileListDto files = fileService.list(userId);
 			return new ResponseEntity(files, HttpStatus.OK);
 		} catch (InvalidUserException exception) {
 			return new ResponseEntity(exception, InvalidUserException.HTTP_STATUS);
@@ -123,11 +122,11 @@ public class FileController {
 			@ApiResponse(code = 400, message = "BAD_REQUEST", response = InvalidFolderException.class)
 	})
 	@GetMapping(value = "/folder/{folderId}")
-	public ResponseEntity filesFolder(
+	public ResponseEntity listFiles (
 			@ApiParam(value = "Value representing the unique folder identificator.", required = true) @PathVariable UUID folderId) {
 
 		try {
-			FileListDto files = fileService.filesFolder(folderId);
+			FileListDto files = fileService.listFiles(folderId);
 			return new ResponseEntity(files, HttpStatus.OK);
 		} catch (InvalidFolderException exception) {
 			return new ResponseEntity(exception, InvalidFolderException.HTTP_STATUS);
@@ -145,7 +144,7 @@ public class FileController {
 			@ApiParam(value = "Value representing the unique file identificator.", required = true) @PathVariable UUID fileId) {
 
 		try {
-			ResponseMessage message = fileService.deleteFile(fileId);
+			ResponseMessage message = fileService.delete(fileId);
 			return new ResponseEntity(message, message.getStatus());
 		} catch (InvalidFileException exception) {
 			return new ResponseEntity(exception, InvalidFileException.HTTP_STATUS);

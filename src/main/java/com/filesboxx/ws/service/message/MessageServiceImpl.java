@@ -1,5 +1,6 @@
 package com.filesboxx.ws.service.message;
 
+import com.filesboxx.ws.model.chat.Chat;
 import com.filesboxx.ws.model.message.Message;
 import com.filesboxx.ws.model.message.MessageStatus;
 import com.filesboxx.ws.repository.message.MessageRepository;
@@ -45,7 +46,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public long countNewMessages(UUID senderId, UUID recipientId) {
-        return repository.countBySenderIdAndRecipientIdAndStatus(
+        return repository.countBySenderUserIdAndRecipientUserIdAndStatus(
                 senderId, recipientId, MessageStatus.RECEIVED);
     }
 
@@ -53,10 +54,10 @@ public class MessageServiceImpl implements MessageService {
     public List<Message> findChatMessages(UUID senderId, UUID recipientId) {
         log.info("Method for finding chat started.");
 
-        Optional<UUID> chatId = conversationService.getChatId(senderId, recipientId, false);
+        Optional<Chat> chat = conversationService.getChatId(senderId, recipientId, false);
 
         List<Message> messages =
-                chatId.map(repository::findByChatId).orElse(new ArrayList<>());
+                chat.map((Chat c) -> repository.findByChatChatId(c.getChatId())).orElse(new ArrayList<>());
 
         if(messages.size() > 0) {
             updateStatuses(senderId, recipientId, MessageStatus.DELIVERED);

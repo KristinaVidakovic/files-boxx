@@ -3,14 +3,7 @@ package com.filesboxx.ws.model.notification;
 import java.security.Timestamp;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.filesboxx.ws.model.user.User;
 import lombok.*;
@@ -32,21 +25,19 @@ public class Notification {
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "NOTIFICATION_ID")
 	private UUID notificationId;
-	@Column(name = "SENDER_ID")
-	private UUID senderId;
 	@Column(name = "TEXT")
 	private String text;
 	@Column(name = "DATE_TIME")
 	private Timestamp dateTime;
 	
-	@ManyToOne(targetEntity = User.class, cascade = CascadeType.ALL)
-	@JoinColumn(name = "SENDER_ID", referencedColumnName = "USER_ID", insertable = false, updatable = false)
-	private User user;
+	@ManyToOne(targetEntity = User.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "SENDER_ID")
+	private User sender;
 
-	public Notification(UUID notificationId, UUID senderId, String text) {
+	public Notification(UUID notificationId, User senderId, String text) {
 		super();
 		this.notificationId = notificationId;
-		this.senderId = senderId;
+		this.sender = senderId;
 		this.text = text;
 	}
 	

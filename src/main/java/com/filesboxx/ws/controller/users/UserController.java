@@ -38,11 +38,11 @@ public class UserController {
 			@ApiResponse(code = 400, message = "BAD_REQUEST", response = UserExistsException.class)
 	})
 	@PostMapping(value = "/auth/sign-up")
-	public ResponseEntity create(
+	public ResponseEntity save(
 			@ApiParam(value = "A JSON object representing the user.", required = true) @RequestBody UserCreateDto user) {
 
 		try{
-			UserDto responseUser = userService.create(user);
+			UserDto responseUser = userService.save(user);
 			return new ResponseEntity(responseUser, HttpStatus.CREATED);
 		} catch (InvalidAttributesException exception) {
 			return new ResponseEntity(exception, InvalidAttributesException.HTTP_STATUS);
@@ -58,7 +58,7 @@ public class UserController {
 			@ApiResponse(code = 400, message = "BAD_REQUEST", response = InvalidUserException.class)
 	})
 	@GetMapping(value = "/{userId}")
-	public ResponseEntity findUser (
+	public ResponseEntity findById (
 			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable UUID userId) {
 
 		try{
@@ -79,7 +79,7 @@ public class UserController {
 			@ApiResponse(code = 400, message = "BAD_REQUEST", response = UserSignInException.class)
 	})
 	@PostMapping(value = "/auth/sign-in")
-	public ResponseEntity getUser (
+	public ResponseEntity signIn (
 			@ApiParam(value = "Object representing the user's credentials.", required = true) @RequestBody UserSignInDto dto) {
 
 		try{

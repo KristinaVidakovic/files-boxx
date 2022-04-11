@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.filesboxx.ws.model.response.ResponseMessage;
@@ -28,13 +29,16 @@ public class UserServiceImpl implements UserService {
 	static Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
 	private final UserRepository userRepo;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
 	UserServiceImpl(UserRepository userRepo) {
 		this.userRepo = userRepo;
 	}
 	
-	public UserDto create(UserCreateDto user) {
+	public UserDto save(UserCreateDto user) throws InvalidAttributesException, UserExistsException {
 		
 		log.info("Called POST method for registration new user.");
 		
@@ -51,7 +55,8 @@ public class UserServiceImpl implements UserService {
 			log.error("User with forwarded username already exists.");
 			throw new UserExistsException();
 		}
-		
+
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		User saved = userRepo.save(UsersMapper.toUser(user));
 		
 		log.info("New user registered with username: " + user.getUsername() + "!");
@@ -60,7 +65,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDto getUserByUserId(UUID userId) {
+	public UserDto getUserByUserId(UUID userId) throws InvalidUserException {
 		
 		log.info("Called GET method for getting user by user ID.");
 		
@@ -77,7 +82,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDto getUserSignIn(UserSignInDto dto) {
+	public UserDto getUserSignIn(UserSignInDto dto) throws InvalidAttributesException, InvalidUserException, InvalidPasswordException, UserSignInException {
 
 		log.info("Called method for signIn.");
 
@@ -93,7 +98,7 @@ public class UserServiceImpl implements UserService {
 			throw new InvalidUserException();
 		}
 
-		if (!user.getPassword().equals(dto.getPassword())) {
+		if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
 			log.error("Wrong password!");
 			throw new InvalidPasswordException();
 
@@ -115,7 +120,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ResponseMessage signOut() {
+	public ResponseMessage signOut() throws UserSignOutException {
 		log.info("Called method for signing out!");
 
 		ResponseMessage message = new ResponseMessage();
@@ -140,7 +145,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDto update(UUID userId, UserUpdateDto dto) {
+	public UserDto update(UUID userId, UserUpdateDto dto) throws InvalidUserException {
 
 		log.info("Called method for updating user.");
 
@@ -149,6 +154,10 @@ public class UserServiceImpl implements UserService {
 		if (user == null) {
 			log.error("Forwarded user doesn't exists.");
 			throw new InvalidUserException();
+		}
+
+		if (dto.getPassword() != null) {
+			dto.setPassword(passwordEncoder.encode(dto.getPassword()));
 		}
 
 		User merged = UsersMapper.merge(user, dto);

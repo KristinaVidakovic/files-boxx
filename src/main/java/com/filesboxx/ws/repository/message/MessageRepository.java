@@ -11,7 +11,7 @@ import java.util.UUID;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, UUID> {
 
-    long countBySenderIdAndRecipientIdAndStatus(UUID senderId, UUID recipientId, MessageStatus status);
+    long countBySenderUserIdAndRecipientUserIdAndStatus(UUID senderId, UUID recipientId, MessageStatus status);
 
-    List<Message> findByChatId(UUID chatId);
+    List<Message> findByChatChatId(UUID chatId);
 }

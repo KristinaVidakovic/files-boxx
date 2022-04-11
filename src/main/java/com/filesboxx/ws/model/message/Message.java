@@ -26,30 +26,24 @@ public class Message {
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "MESSAGE_ID")
 	private UUID messageId;
-	@Column(name = "CHAT_ID")
-	private UUID chatId;
 	@Column(name = "TEXT")
 	private String text;
-	@Column(name = "SENDER_ID")
-	private UUID senderId;
-	@Column(name = "RECIPIENT_ID")
-	private UUID recipientId;
 	@Column(name = "STATUS")
 	private MessageStatus status;
 	@Column(name = "DATE_TIME")
 	private Timestamp dateTime;
 	
-	@ManyToOne(targetEntity = Chat.class, cascade = CascadeType.ALL)
-	@JoinColumn(name = "CHAT_ID", referencedColumnName = "CHAT_ID", insertable = false, updatable = false)
+	@ManyToOne(targetEntity = Chat.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "CHAT_ID")
 	private Chat chat;
 
-	@OneToOne(targetEntity = User.class, cascade = CascadeType.ALL)
-	@JoinColumn(name = "SENDER_ID", referencedColumnName = "USER_ID", insertable = false, updatable = false)
-	private User one;
+	@OneToOne(targetEntity = User.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "SENDER_ID")
+	private User sender;
 
 	@OneToOne(targetEntity = User.class, cascade = CascadeType.ALL)
-	@JoinColumn(name = "RECIPIENT_ID", referencedColumnName = "USER_ID", insertable = false, updatable = false)
-	private User two;
+	@JoinColumn(name = "RECIPIENT_ID")
+	private User recipient;
 
 	@Override
 	public String toString() {

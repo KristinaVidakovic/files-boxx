@@ -47,7 +47,7 @@ public class FileServiceImpl implements FileService {
 	}
 	
 	@Override
-	public FileDto file(MultipartFile forwarded, UUID userId) {
+	public FileDto save(MultipartFile forwarded, UUID userId) throws InvalidUserException, InvalidDataException {
 		
 		log.info("Called POST method for inserting new file.");
 		
@@ -71,11 +71,11 @@ public class FileServiceImpl implements FileService {
 		file.setDeleted(false);
 		File saved = fileRepo.save(file);
 
-		log.info("File " + file.getName() + "entered!");
+		log.info("File " + saved.getName() + " entered!");
 		
 		BelongsFileUser belongs = new BelongsFileUser();
-		belongs.setFileId(file.getFileId());
-		belongs.setUserId(userId);
+		belongs.setFile(saved);
+		belongs.setUser(userRepo.findByUserId(userId));
 		belongs.setDeleted(false);
 		fileUserRepo.save(belongs);
 
@@ -85,7 +85,7 @@ public class FileServiceImpl implements FileService {
 	}
 	
 	@Override
-	public FileDto fileFolder(MultipartFile forwarded, UUID folderId) {
+	public FileDto saveFile(MultipartFile forwarded, UUID folderId) throws InvalidFolderException, InvalidDataException {
 		
 		log.info("Called POST method for inserting new file.");
 		
@@ -108,11 +108,11 @@ public class FileServiceImpl implements FileService {
 		
 		file.setDeleted(false);
 		File saved = fileRepo.save(file);
-		log.info("File " + file.getName() + "entered!");
+		log.info("File " + saved.getName() + "entered!");
 		
 		BelongsFileFolder belongs = new BelongsFileFolder();
-		belongs.setFileId(file.getFileId());
-		belongs.setFolderId(folderId);
+		belongs.setFile(saved);
+		belongs.setFolder(folderRepo.findByFolderId(folderId));
 		belongs.setDeleted(false);
 		fileFolderRepo.save(belongs);
 		log.info("Inserted connection file-folder!");
@@ -121,7 +121,7 @@ public class FileServiceImpl implements FileService {
 	}
 	
 	@Override
-	public ResponseMessage updateLocation(FileLocationDto dto) {
+	public ResponseMessage updateLocation(FileLocationDto dto) throws InvalidFileException, InvalidUserException, InvalidFolderException {
 		
 		log.info("Called PUT method for file location update.");
 		
@@ -139,10 +139,10 @@ public class FileServiceImpl implements FileService {
 				throw new InvalidUserException();
 			}
 			
-			BelongsFileFolder bff = fileFolderRepo.findByFileIdAndDeletedFalse(dto.getLocationUser().getFileId());
+			BelongsFileFolder bff = fileFolderRepo.findByFileFileIdAndDeletedFalse(dto.getLocationUser().getFileId());
 			BelongsFileUser bfu = new BelongsFileUser();
-			bfu.setFileId(dto.getLocationUser().getFileId());
-			bfu.setUserId(dto.getLocationUser().getUserId());
+			bfu.setFile(fileRepo.findByFileId(dto.getLocationUser().getFileId()));
+			bfu.setUser(userRepo.findByUserId(dto.getLocationUser().getUserId()));
 			bfu.setDeleted(false);
 			fileUserRepo.save(bfu);
 			log.info("Connection file-user added!");
@@ -162,9 +162,9 @@ public class FileServiceImpl implements FileService {
 				throw new InvalidFolderException();
 			}
 			
-			BelongsFileUser bfu = fileUserRepo.findByFileIdAndDeletedFalse(dto.getLocationFolder().getFileId());
+			BelongsFileUser bfu = fileUserRepo.findByFileFileIdAndDeletedFalse(dto.getLocationFolder().getFileId());
 			if(bfu == null) {
-				BelongsFileFolder bff = fileFolderRepo.findByFileIdAndDeletedFalse(dto.getLocationFolder().getFileId());
+				BelongsFileFolder bff = fileFolderRepo.findByFileFileIdAndDeletedFalse(dto.getLocationFolder().getFileId());
 				bff.setDeleted(true);
 				fileFolderRepo.save(bff);
 				log.info("Connection file-user updated!");
@@ -174,8 +174,8 @@ public class FileServiceImpl implements FileService {
 				log.info("Connection file-user updated!");
 			}
 			BelongsFileFolder bff = new BelongsFileFolder();
-			bff.setFileId(dto.getLocationFolder().getFileId());
-			bff.setFolderId(dto.getLocationFolder().getFolderId());
+			bff.setFile(fileRepo.findByFileId(dto.getLocationFolder().getFileId()));
+			bff.setFolder(folderRepo.findByFolderId(dto.getLocationFolder().getFolderId()));
 			bff.setDeleted(false);
 			fileFolderRepo.save(bff);
 			log.info("Connection file-folder added!");
@@ -191,7 +191,7 @@ public class FileServiceImpl implements FileService {
 	}
 	
 	@Override
-	public FileListDto files(UUID userId) {
+	public FileListDto list(UUID userId) throws InvalidUserException {
 		
 		log.info("Called GET method for getting files by user ID.");
 
@@ -202,11 +202,11 @@ public class FileServiceImpl implements FileService {
 			throw new InvalidUserException();
 		}
 		
-		List<BelongsFileUser> belongs = fileUserRepo.findByUserId(userId);
+		List<BelongsFileUser> belongs = fileUserRepo.findByUserUserId(userId);
 
 		for (BelongsFileUser bfu : belongs) {
-			if (!bfu.getDeleted() && !fileRepo.findByFileId(bfu.getFileId()).getDeleted()) {
-				list.add(fileRepo.findByFileId(bfu.getFileId()));
+			if (!bfu.getDeleted() && !fileRepo.findByFileId(bfu.getFile().getFileId()).getDeleted()) {
+				list.add(fileRepo.findByFileId(bfu.getFile().getFileId()));
 			}
 		}
 		
@@ -216,7 +216,7 @@ public class FileServiceImpl implements FileService {
 	}
 	
 	@Override
-	public FileListDto filesFolder(UUID folderId) {
+	public FileListDto listFiles(UUID folderId) throws InvalidFolderException {
 		
 		log.info("Called GET method for getting files from folder by folder ID.");
 
@@ -227,10 +227,10 @@ public class FileServiceImpl implements FileService {
 			throw new InvalidFolderException();
 		}
 		
-		List<BelongsFileFolder> belongsFiles = fileFolderRepo.findByFolderIdAndDeletedFalse(folderId);
+		List<BelongsFileFolder> belongsFiles = fileFolderRepo.findByFolderFolderIdAndDeletedFalse(folderId);
 		
 		for (BelongsFileFolder bff: belongsFiles) {
-			list.add(fileRepo.findByFileId(bff.getFileId()));
+			list.add(fileRepo.findByFileId(bff.getFile().getFileId()));
 		}
 		
 		log.info("Method for getting files executed.");
@@ -239,7 +239,7 @@ public class FileServiceImpl implements FileService {
 	}
 
 	@Override
-	public ResponseMessage deleteFile(UUID fileId) {
+	public ResponseMessage delete(UUID fileId) throws InvalidFileException {
 
 		log.info("Called DELETE method for deleting file by file ID.");
 
@@ -252,13 +252,13 @@ public class FileServiceImpl implements FileService {
 
 		File file = fileRepo.findByFileId(fileId);
 
-		BelongsFileFolder bff = fileFolderRepo.findByFileIdAndDeletedFalse(fileId);
+		BelongsFileFolder bff = fileFolderRepo.findByFileFileIdAndDeletedFalse(fileId);
 		if (bff != null) {
 			bff.setDeleted(true);
 			fileFolderRepo.save(bff);
 			log.info("Belongs file folder deleted!");
 		}
-		BelongsFileUser bfu = fileUserRepo.findByFileIdAndDeletedFalse(fileId);
+		BelongsFileUser bfu = fileUserRepo.findByFileFileIdAndDeletedFalse(fileId);
 		if (bfu != null) {
 			bfu.setDeleted(true);
 			fileUserRepo.save(bfu);

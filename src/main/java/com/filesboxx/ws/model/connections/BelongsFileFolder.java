@@ -1,13 +1,6 @@
 package com.filesboxx.ws.model.connections;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.filesboxx.ws.model.file.File;
 import com.filesboxx.ws.model.folder.Folder;
@@ -35,19 +28,15 @@ public class BelongsFileFolder {
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "BFF_ID")
 	private UUID bffId;
-	@Column(name = "FILE_ID")
-	private UUID fileId;
-	@Column(name = "FOLDER_ID")
-	private UUID folderId;
 	@Column(name = "DELETED")
 	private Boolean deleted;
 	
-	@OneToOne(targetEntity = File.class, cascade = CascadeType.ALL)
-	@JoinColumn(name = "FILE_ID", referencedColumnName = "FILE_ID", insertable = false, updatable = false)
+	@OneToOne(targetEntity = File.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "FILE_ID")
 	private File file;
 	
-	@OneToOne(targetEntity = Folder.class, cascade = CascadeType.ALL)
-	@JoinColumn(name = "FOLDER_ID", referencedColumnName = "FOLDER_ID", insertable = false, updatable = false)
+	@OneToOne(targetEntity = Folder.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "FOLDER_ID")
 	private Folder folder;
 
 	@Override

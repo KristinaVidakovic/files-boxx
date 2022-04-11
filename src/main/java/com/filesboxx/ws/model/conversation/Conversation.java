@@ -1,13 +1,6 @@
 package com.filesboxx.ws.model.conversation;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.filesboxx.ws.model.chat.Chat;
 import com.filesboxx.ws.model.user.User;
@@ -33,23 +26,17 @@ public class Conversation {
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "CONVERSATION_ID")
 	private UUID conversationId;
-	@Column(name = "SENDER_ID")
-	private UUID senderId;
-	@Column(name = "RECIPIENT_ID")
-	private UUID recipientId;
-	@Column(name = "CHAT_ID")
-	private UUID chatId;
 	
-	@OneToOne(targetEntity = User.class, cascade = CascadeType.ALL)
-	@JoinColumn(name = "SENDER_ID", referencedColumnName = "USER_ID", insertable = false, updatable = false)
-	private User one;
+	@OneToOne(targetEntity = User.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "SENDER_ID")
+	private User sender;
 	
-	@OneToOne(targetEntity = User.class, cascade = CascadeType.ALL)
-	@JoinColumn(name = "RECIPIENT_ID", referencedColumnName = "USER_ID", insertable = false, updatable = false)
-	private User two;
+	@OneToOne(targetEntity = User.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "RECIPIENT_ID")
+	private User recipient;
 	
-	@OneToOne(targetEntity = Chat.class, cascade = CascadeType.ALL)
-	@JoinColumn(name = "CHAT_ID", referencedColumnName = "CHAT_ID", insertable = false, updatable = false)
+	@OneToOne(targetEntity = Chat.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "CHAT_ID")
 	private Chat chat;
 
 	@Override

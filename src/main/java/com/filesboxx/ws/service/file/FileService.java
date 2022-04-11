@@ -3,21 +3,25 @@ package com.filesboxx.ws.service.file;
 import java.util.UUID;
 
 import com.filesboxx.ws.controller.files.dto.*;
+import com.filesboxx.ws.exceptions.InvalidDataException;
+import com.filesboxx.ws.exceptions.InvalidFileException;
+import com.filesboxx.ws.exceptions.InvalidFolderException;
+import com.filesboxx.ws.exceptions.InvalidUserException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.filesboxx.ws.model.response.ResponseMessage;
 
 public interface FileService {
 
-	FileDto file(MultipartFile file, UUID userId);
+	FileDto save(MultipartFile file, UUID userId) throws InvalidUserException, InvalidDataException;
 	
-	FileDto fileFolder(MultipartFile file, UUID folderId);
+	FileDto saveFile(MultipartFile file, UUID folderId) throws InvalidFolderException, InvalidDataException;
 	
-	ResponseMessage updateLocation(FileLocationDto dto);
+	ResponseMessage updateLocation(FileLocationDto dto) throws InvalidFileException, InvalidUserException, InvalidFolderException;
 	
-	FileListDto files(UUID userId);
+	FileListDto list(UUID userId) throws InvalidUserException;
 	
-	FileListDto filesFolder(UUID folderId);
+	FileListDto listFiles(UUID folderId) throws InvalidFolderException;
 
-	ResponseMessage deleteFile(UUID fileId);
+	ResponseMessage delete(UUID fileId) throws InvalidFileException;
 }

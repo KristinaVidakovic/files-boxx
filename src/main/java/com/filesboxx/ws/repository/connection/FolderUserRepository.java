@@ -11,7 +11,7 @@ import com.filesboxx.ws.model.connections.BelongsFolderUser;
 @Repository
 public interface FolderUserRepository extends JpaRepository<BelongsFolderUser, UUID> {
 
-	List<BelongsFolderUser> findByUserIdAndDeletedFalse(UUID userId);
+	List<BelongsFolderUser> findByUserUserIdAndDeletedFalse(UUID userId);
 
-	BelongsFolderUser findByFolderIdAndDeletedFalse(UUID folderId);
+	BelongsFolderUser findByFolderFolderIdAndDeletedFalse(UUID folderId);
 }

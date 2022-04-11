@@ -9,7 +9,6 @@ import com.filesboxx.ws.controller.folder.dto.FolderCreateDto;
 import com.filesboxx.ws.controller.folder.dto.FolderDto;
 import com.filesboxx.ws.controller.folder.dto.FolderListDto;
 import com.filesboxx.ws.exceptions.FolderExistsException;
-import com.filesboxx.ws.exceptions.InvalidArgumentException;
 import com.filesboxx.ws.exceptions.InvalidFolderException;
 import com.filesboxx.ws.exceptions.InvalidUserException;
 import org.slf4j.Logger;
@@ -42,7 +41,7 @@ public class FolderServiceImpl implements FolderService {
 	}
 
 	@Override
-	public FolderDto folder(FolderCreateDto dto, UUID userId) {
+	public FolderDto save(FolderCreateDto dto, UUID userId) throws InvalidUserException, FolderExistsException {
 
 		log.info("Called POST method for creating new folder.");
 
@@ -51,10 +50,10 @@ public class FolderServiceImpl implements FolderService {
 			throw new InvalidUserException();
 		}
 
-		List<BelongsFolderUser> folders = folderUserRepo.findByUserIdAndDeletedFalse(userId);
+		List<BelongsFolderUser> folders = folderUserRepo.findByUserUserIdAndDeletedFalse(userId);
 
 		folders.forEach(i -> {
-			if (folderRepo.findByFolderId(i.getFolderId()).getName().equals(dto.getName())) {
+			if (folderRepo.findByFolderId(i.getFolder().getFolderId()).getName().equals(dto.getName())) {
 				log.error("Folder with forwarded name already exists.");
 				throw new FolderExistsException();
 			}
@@ -65,8 +64,8 @@ public class FolderServiceImpl implements FolderService {
 		log.info("Created folder " + saved.getName() + "!");
 
 		BelongsFolderUser belongs = new BelongsFolderUser();
-		belongs.setFolderId(saved.getFolderId());
-		belongs.setUserId(userId);
+		belongs.setFolder(saved);
+		belongs.setUser(userRepo.findByUserId(userId));
 		belongs.setDeleted(false);
 		folderUserRepo.save(belongs);
 		log.info("Inserted connection folder-user!");
@@ -75,7 +74,7 @@ public class FolderServiceImpl implements FolderService {
 	}
 	
 	@Override
-	public FolderListDto folders(UUID userId) {
+	public FolderListDto list(UUID userId) throws InvalidUserException {
 		
 		log.info("Called GET method for getting folders for forwarded user ID.");
 
@@ -86,10 +85,10 @@ public class FolderServiceImpl implements FolderService {
 			throw new InvalidUserException();
 		}
 		
-		List<BelongsFolderUser> belongs = folderUserRepo.findByUserIdAndDeletedFalse(userId);
+		List<BelongsFolderUser> belongs = folderUserRepo.findByUserUserIdAndDeletedFalse(userId);
 		
 		for (BelongsFolderUser bfu : belongs) {
-			UUID folderId = bfu.getFolderId();
+			UUID folderId = bfu.getFolder().getFolderId();
 			Folder folder = folderRepo.findByFolderId(folderId);
 			list.add(folder);
 		}
@@ -100,7 +99,7 @@ public class FolderServiceImpl implements FolderService {
 	}
 
 	@Override
-	public ResponseMessage deleteFolder(UUID folderId) {
+	public ResponseMessage delete(UUID folderId) throws InvalidFolderException {
 
 		log.info("Called DELETE method for deleting folder by folder ID.");
 
@@ -111,7 +110,7 @@ public class FolderServiceImpl implements FolderService {
 			throw new InvalidFolderException();
 		}
 
-		BelongsFolderUser bfu = folderUserRepo.findByFolderIdAndDeletedFalse(folderId);
+		BelongsFolderUser bfu = folderUserRepo.findByFolderFolderIdAndDeletedFalse(folderId);
 		if (bfu != null) {
 			bfu.setDeleted(true);
 			folderUserRepo.save(bfu);

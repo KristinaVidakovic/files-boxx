@@ -10,5 +10,5 @@ import java.util.UUID;
 @Repository
 public interface ConversationRepository extends JpaRepository<Conversation, UUID> {
 
-    Optional<Conversation> findBySenderIdAndRecipientId(UUID senderId, UUID recipientId);
+    Optional<Conversation> findBySenderUserIdAndRecipientUserId(UUID senderId, UUID recipientId);
 }

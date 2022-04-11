@@ -1,5 +1,6 @@
 package com.filesboxx.ws.controller.messages;
 
+import com.filesboxx.ws.model.chat.Chat;
 import com.filesboxx.ws.model.message.Message;
 import com.filesboxx.ws.model.notification.Notification;
 import com.filesboxx.ws.service.conversation.ConversationService;
@@ -32,17 +33,17 @@ public class MessageController {
 
     @MessageMapping("/chat")
     public void processMessage(@Payload Message chatMessage) {
-        Optional<UUID> chatId = conversationService
-                .getChatId(chatMessage.getSenderId(), chatMessage.getRecipientId(), true);
-        chatMessage.setChatId(chatId.get());
+        Optional<Chat> chat = conversationService
+                .getChatId(chatMessage.getSender().getUserId(), chatMessage.getRecipient().getUserId(), true);
+        chatMessage.setChat(chat.get());
 
         Message saved = messageService.save(chatMessage);
 
         messagingTemplate.convertAndSendToUser(
-                String.valueOf(chatMessage.getRecipientId()),"/queue/messages",
+                String.valueOf(chatMessage.getRecipient().getUserId()),"/queue/messages",
                 new Notification(
                         saved.getMessageId(),
-                        saved.getSenderId(),
+                        saved.getSender(),
                         saved.getText()));
     }
 

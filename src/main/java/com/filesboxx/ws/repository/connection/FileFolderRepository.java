@@ -11,7 +11,7 @@ import com.filesboxx.ws.model.connections.BelongsFileFolder;
 @Repository
 public interface FileFolderRepository extends JpaRepository<BelongsFileFolder, UUID> {
 
-	BelongsFileFolder findByFileIdAndDeletedFalse(UUID fileId);
+	BelongsFileFolder findByFileFileIdAndDeletedFalse(UUID fileId);
 	
-	List<BelongsFileFolder> findByFolderIdAndDeletedFalse(UUID folderId);
+	List<BelongsFileFolder> findByFolderFolderIdAndDeletedFalse(UUID folderId);
 }

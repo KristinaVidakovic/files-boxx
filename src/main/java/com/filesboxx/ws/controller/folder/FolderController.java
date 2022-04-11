@@ -40,12 +40,12 @@ public class FolderController {
 			@ApiResponse(code = 400, message = "BAD_REQUEST", response = FolderExistsException.class)
 	})
 	@PostMapping(value = "/{userId}")
-	public ResponseEntity create(
+	public ResponseEntity save(
 			@ApiParam(value = "JSON object representing the folder.", required = true) @RequestBody FolderCreateDto folder,
 			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable UUID userId){
 
 		try {
-			FolderDto responseFolder = folderService.folder(folder, userId);
+			FolderDto responseFolder = folderService.save(folder, userId);
 			return new ResponseEntity(responseFolder, HttpStatus.CREATED);
 		} catch (InvalidUserException exception) {
 			return new ResponseEntity(exception, InvalidUserException.HTTP_STATUS);
@@ -61,11 +61,11 @@ public class FolderController {
 			@ApiResponse(code = 400, message = "BAD_REQUEST", response = InvalidUserException.class)
 	})
 	@GetMapping(value = "/{userId}")
-	public ResponseEntity folders (
+	public ResponseEntity list (
 			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable UUID userId) {
 
 		try {
-			FolderListDto folders = folderService.folders(userId);
+			FolderListDto folders = folderService.list(userId);
 			return new ResponseEntity(folders, HttpStatus.OK);
 		} catch (InvalidUserException exception) {
 			return new ResponseEntity(exception, InvalidUserException.HTTP_STATUS);
@@ -83,7 +83,7 @@ public class FolderController {
 			@ApiParam(value = "Value representing the unique folder identificator.", required = true) @PathVariable UUID folderId) {
 
 		try {
-			ResponseMessage message = folderService.deleteFolder(folderId);
+			ResponseMessage message = folderService.delete(folderId);
 			return new ResponseEntity<>(message, message.getStatus());
 		} catch (InvalidFolderException exception) {
 			return new ResponseEntity(exception, InvalidFolderException.HTTP_STATUS);
