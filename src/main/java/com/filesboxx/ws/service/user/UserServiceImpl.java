@@ -56,11 +56,13 @@ public class UserServiceImpl implements UserService {
 			throw new UserExistsException();
 		}
 
+		String password = user.getPassword();
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		User saved = userRepo.save(UsersMapper.toUser(user));
 		
 		log.info("New user registered with username: " + user.getUsername() + "!");
-		
+
+		saved.setPassword(password);
 		return UsersMapper.toUserDto(saved);
 	}
 
@@ -114,6 +116,7 @@ public class UserServiceImpl implements UserService {
 					.compact();
 			user.setToken(token);
 			User saved = userRepo.save(user);
+			saved.setPassword(dto.getPassword());
 			log.info("User successfully signed in!");
 			return UsersMapper.toUserDto(saved);
 		}
@@ -163,6 +166,7 @@ public class UserServiceImpl implements UserService {
 		User merged = UsersMapper.merge(user, dto);
 		User saved = userRepo.save(merged);
 
+		saved.setPassword(dto.getPassword());
 		return UsersMapper.toUserDto(saved);
 	}
 
