@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 public class UserSignInException extends AppException {
 
     public static final HttpStatus HTTP_STATUS = HttpStatus.BAD_REQUEST;
-    private static final String DEFAULT_MESSAGE = "Some user is already signed in.";
+    private static final String DEFAULT_MESSAGE = "User already signed in.";
 
     HttpStatus status = HTTP_STATUS;
 
@@ -34,6 +34,6 @@ public class UserSignInException extends AppException {
 
     @Override
     String getErrorCode() {
-        return ErrorUtils.getErrorCode(getHttpStatus().value(), "Some user is already signed in.");
+        return ErrorUtils.getErrorCode(getHttpStatus().value(), "User already signed in.");
     }
 }
