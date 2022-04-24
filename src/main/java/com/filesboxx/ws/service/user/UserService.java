@@ -17,7 +17,7 @@ public interface UserService {
 	
 	UserDto getUserSignIn(UserSignInDto body) throws InvalidAttributesException, InvalidUserException, InvalidPasswordException, UserSignInException;
 
-    ResponseMessage signOut() throws UserSignOutException;
+    ResponseMessage signOut(UUID userId) throws UserSignOutException;
 
     UserDto update(UUID userId, UserUpdateDto dto) throws InvalidUserException;
 }

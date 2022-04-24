@@ -102,11 +102,12 @@ public class UserController {
 			@ApiResponse(code = 200, message = "OK", response = ResponseMessage.class),
 			@ApiResponse(code = 400, message = "BAD_REQUEST", response = ResponseMessage.class)
 	})
-	@PostMapping(value = "/auth/sign-out")
-	public ResponseEntity signOut () {
+	@PostMapping(value = "/auth/sign-out/{id}")
+	public ResponseEntity signOut (
+			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable UUID id) {
 
 		try {
-			ResponseMessage message = userService.signOut();
+			ResponseMessage message = userService.signOut(id);
 			return new ResponseEntity<>(message, message.getStatus());
 		} catch (UserSignOutException exception) {
 			return new ResponseEntity(exception, UserSignOutException.HTTP_STATUS);

@@ -20,7 +20,6 @@ import com.filesboxx.ws.repository.user.UserRepository;
 import io.jsonwebtoken.Jwts;
 
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -104,8 +103,8 @@ public class UserServiceImpl implements UserService {
 			log.error("Wrong password!");
 			throw new InvalidPasswordException();
 
-		} else if (getTokens()) {
-			log.error("Some user is already signed in.");
+		} else if (user.getToken() != null) {
+			log.error("User already signed in.");
 			throw new UserSignInException();
 
 		} else {
@@ -123,18 +122,17 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ResponseMessage signOut() throws UserSignOutException {
+	public ResponseMessage signOut(UUID userId) throws UserSignOutException {
 		log.info("Called method for signing out!");
 
+		User user = userRepo.findByUserId(userId);
 		ResponseMessage message = new ResponseMessage();
 
-		if (!getTokens()) {
-			log.error("No user is signed in!");
+		if (user.getToken() == null) {
+			log.error("User already signed out!");
 			throw new UserSignOutException();
 
 		} else {
-			UUID userId = userRepo.findToken();
-			User user = userRepo.findByUserId(userId);
 			user.setToken(null);
 			userRepo.save(user);
 
@@ -168,10 +166,5 @@ public class UserServiceImpl implements UserService {
 
 		saved.setPassword(dto.getPassword());
 		return UsersMapper.toUserDto(saved);
-	}
-
-	private boolean getTokens() {
-		List<User> users = userRepo.findAll();
-		return users.stream().anyMatch(i -> i.getToken() != null);
 	}
 }

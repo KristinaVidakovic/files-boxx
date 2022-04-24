@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 public class UserSignOutException extends AppException {
 
     public static final HttpStatus HTTP_STATUS = HttpStatus.BAD_REQUEST;
-    private static final String DEFAULT_MESSAGE = "No user is signed in!";
+    private static final String DEFAULT_MESSAGE = "User already signed out!";
 
     HttpStatus status = HTTP_STATUS;
 
@@ -34,6 +34,6 @@ public class UserSignOutException extends AppException {
 
     @Override
     String getErrorCode() {
-        return ErrorUtils.getErrorCode(getHttpStatus().value(), "No user is signed in!");
+        return ErrorUtils.getErrorCode(getHttpStatus().value(), "User already signed out!");
     }
 }
