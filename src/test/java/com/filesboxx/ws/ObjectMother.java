@@ -8,6 +8,7 @@ import com.filesboxx.ws.model.user.User;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -119,6 +120,6 @@ public class ObjectMother {
     }
 
     private static Folder createFolder() {
-        return new Folder(UUID.randomUUID(), "Folder name", false);
+        return new Folder(UUID.randomUUID(), "Folder name", new Date(), false);
     }
 }

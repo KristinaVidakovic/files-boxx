@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,6 +27,8 @@ class FilesMapperTest {
         FileDto expected = new FileDto(
                 FILE_ID,
                 "File name",
+                "txt",
+                new Date(),
                 "Hello".getBytes());
 
         FileDto actual = FilesMapper.toFileDto(file);
@@ -43,6 +46,8 @@ class FilesMapperTest {
         List<FileDto> expected = new ArrayList<>();
         FileDto dto = new FileDto(FILE_ID,
                 "File name",
+                "txt",
+                new Date(),
                 "Hello".getBytes());
         expected.add(dto);
 

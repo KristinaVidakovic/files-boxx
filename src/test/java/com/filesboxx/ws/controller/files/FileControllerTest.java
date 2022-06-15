@@ -16,10 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
@@ -42,6 +39,8 @@ class FileControllerTest {
         FileDto fileDto = new FileDto(
                 UUID.randomUUID(),
                 "File name",
+                "txt",
+                new Date(),
                 "Hello".getBytes());
 
         doReturn(fileDto).when(fileService).save(file, userId);
@@ -75,6 +74,8 @@ class FileControllerTest {
         FileDto fileDto = new FileDto(
                 UUID.randomUUID(),
                 "File name",
+                "txt",
+                new Date(),
                 "Hello".getBytes());
 
         doReturn(fileDto).when(fileService).saveFile(file, folderId);
@@ -199,6 +200,8 @@ class FileControllerTest {
         FileDto fileDto = new FileDto(
                 UUID.randomUUID(),
                 "File name",
+                "txt",
+                new Date(),
                 "Hello".getBytes());
         files.add(fileDto);
         FileListDto dto = new FileListDto(1L, files);
@@ -234,6 +237,8 @@ class FileControllerTest {
         FileDto fileDto = new FileDto(
                 UUID.randomUUID(),
                 "File name",
+                "txt",
+                new Date(),
                 "Hello".getBytes());
         files.add(fileDto);
         FileListDto dto = new FileListDto(1L, files);

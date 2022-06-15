@@ -13,6 +13,8 @@ public class FilesMapper {
         return new FileDto(
                 saved.getFileId(),
                 saved.getName(),
+                saved.getExtension(),
+                saved.getDate(),
                 saved.getData());
     }
 

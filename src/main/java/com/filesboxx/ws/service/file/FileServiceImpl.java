@@ -2,6 +2,7 @@ package com.filesboxx.ws.service.file;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,7 +59,10 @@ public class FileServiceImpl implements FileService {
 			throw new InvalidUserException();
 		}
 
-		file.setName(forwarded.getOriginalFilename());
+		int index = forwarded.getOriginalFilename().lastIndexOf(".");
+
+		file.setName(forwarded.getOriginalFilename().substring(0,index));
+		file.setExtension(forwarded.getOriginalFilename().substring(index+1));
 
 		try {
 			file.setData(forwarded.getBytes());
@@ -69,6 +73,7 @@ public class FileServiceImpl implements FileService {
 		}
 		
 		file.setDeleted(false);
+		file.setDate(new Date());
 		File saved = fileRepo.save(file);
 
 		log.info("File " + saved.getName() + " entered!");
@@ -95,8 +100,11 @@ public class FileServiceImpl implements FileService {
 			log.error("Forwarded folder doesn't exists.");
 			throw new InvalidFolderException();
 		}
-		
-		file.setName(forwarded.getOriginalFilename());
+
+		int index = forwarded.getOriginalFilename().lastIndexOf(".");
+
+		file.setName(forwarded.getOriginalFilename().substring(0,index));
+		file.setExtension(forwarded.getOriginalFilename().substring(index+1));
 
 		try {
 			file.setData(forwarded.getBytes());
@@ -107,6 +115,7 @@ public class FileServiceImpl implements FileService {
 		}
 		
 		file.setDeleted(false);
+		file.setDate(new Date());
 		File saved = fileRepo.save(file);
 		log.info("File " + saved.getName() + "entered!");
 		

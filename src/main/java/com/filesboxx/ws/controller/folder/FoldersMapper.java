@@ -6,6 +6,7 @@ import com.filesboxx.ws.controller.folder.dto.FolderListDto;
 import com.filesboxx.ws.model.folder.Folder;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,12 +16,14 @@ public class FoldersMapper {
         return new Folder(
                 UUID.randomUUID(),
                 dto.getName(),
+                new Date(),
                 false);
     }
 
     public static FolderDto toFolderDto(Folder saved) {
         return new FolderDto(saved.getFolderId(),
-                saved.getName());
+                saved.getName(),
+                saved.getDate());
     }
 
     public static FolderListDto toFolderListDto(List<Folder> list) {

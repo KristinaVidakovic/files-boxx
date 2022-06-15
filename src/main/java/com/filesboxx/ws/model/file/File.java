@@ -16,6 +16,7 @@ import org.hibernate.annotations.GenericGenerator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -33,9 +34,13 @@ public class File {
 	private UUID fileId;
 	@Column(name = "NAME")
 	private String name;
+	@Column(name = "EXTENSION")
+	private String extension;
 	@Column(name = "DATA")
 	@Lob
 	private byte[] data;
+	@Column(name = "DATE")
+	private Date date;
 	@Column(name = "DELETED")
 	private Boolean deleted;
 

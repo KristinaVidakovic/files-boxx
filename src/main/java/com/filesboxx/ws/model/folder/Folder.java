@@ -15,6 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -32,6 +33,8 @@ public class Folder {
 	private UUID folderId;
 	@Column(name = "NAME")
 	private String name;
+	@Column(name = "DATE")
+	private Date date;
 	@Column(name = "DELETED")
 	private Boolean deleted;
 

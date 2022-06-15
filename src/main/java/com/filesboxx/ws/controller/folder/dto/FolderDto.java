@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Getter
@@ -18,5 +19,7 @@ public class FolderDto {
     UUID folderId;
     @ApiModelProperty(example = "New folder")
     String name;
+    @ApiModelProperty(example = "date")
+    Date date;
 
 }
