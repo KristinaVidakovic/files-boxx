@@ -1,5 +1,6 @@
 package com.filesboxx.ws.controller.folder;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import com.filesboxx.ws.controller.folder.dto.FolderCreateDto;
@@ -9,6 +10,8 @@ import com.filesboxx.ws.exceptions.FolderExistsException;
 import com.filesboxx.ws.exceptions.InvalidArgumentException;
 import com.filesboxx.ws.exceptions.InvalidFolderException;
 import com.filesboxx.ws.exceptions.InvalidUserException;
+import com.filesboxx.ws.model.sort.SortDirection;
+import com.filesboxx.ws.model.sort.SortField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,10 +65,12 @@ public class FolderController {
 	})
 	@GetMapping(value = "/{userId}")
 	public ResponseEntity list (
-			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable UUID userId) {
+			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable UUID userId,
+			@ApiParam(value = "Value representing sorting field.", allowableValues = "NAME") @RequestParam (name = "sort-by") Optional<SortField> sortField,
+			@ApiParam(value = "Value representing sort direction", allowableValues = "ASC, DESC") @RequestParam (name = "sort-direction") Optional<SortDirection> sortDirection) {
 
 		try {
-			FolderListDto folders = folderService.list(userId);
+			FolderListDto folders = folderService.list(userId, sortField, sortDirection);
 			return new ResponseEntity(folders, HttpStatus.OK);
 		} catch (InvalidUserException exception) {
 			return new ResponseEntity(exception, InvalidUserException.HTTP_STATUS);

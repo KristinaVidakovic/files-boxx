@@ -5,6 +5,8 @@ import com.filesboxx.ws.controller.files.dto.*;
 import com.filesboxx.ws.exceptions.InvalidFileException;
 import com.filesboxx.ws.exceptions.InvalidFolderException;
 import com.filesboxx.ws.exceptions.InvalidUserException;
+import com.filesboxx.ws.model.sort.SortDirection;
+import com.filesboxx.ws.model.sort.SortField;
 import com.filesboxx.ws.model.response.ResponseMessage;
 import com.filesboxx.ws.service.file.FileService;
 import org.junit.jupiter.api.DisplayName;
@@ -209,9 +211,9 @@ class FileControllerTest {
         files.add(fileDto);
         FileListDto dto = new FileListDto(1L, files);
 
-        doReturn(dto).when(fileService).list(userId);
+        doReturn(dto).when(fileService).list(userId, Optional.of(SortField.NAME), Optional.of(SortDirection.ASC));
 
-        ResponseEntity result = fileController.list(userId);
+        ResponseEntity result = fileController.list(userId, Optional.of(SortField.NAME), Optional.of(SortDirection.ASC));
 
         assertEquals(files, ((FileListDto) Objects.requireNonNull(result.getBody())).getItems());
         assertEquals(files.size(), ((FileListDto)result.getBody()).getCount());
@@ -224,9 +226,9 @@ class FileControllerTest {
         UUID userId = UUID.randomUUID();
         InvalidUserException exception = new InvalidUserException();
 
-        doThrow(new InvalidUserException()).when(fileService).list(userId);
+        doThrow(new InvalidUserException()).when(fileService).list(userId, Optional.of(SortField.NAME), Optional.of(SortDirection.ASC));
 
-        ResponseEntity result = fileController.list(userId);
+        ResponseEntity result = fileController.list(userId, Optional.of(SortField.NAME), Optional.of(SortDirection.ASC));
 
         assertEquals(exception.getMessage(), ((InvalidUserException) Objects.requireNonNull(result.getBody())).getMessage());
         assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
@@ -247,9 +249,9 @@ class FileControllerTest {
         files.add(fileDto);
         FileListDto dto = new FileListDto(1L, files);
 
-        doReturn(dto).when(fileService).listFiles(folderId);
+        doReturn(dto).when(fileService).listFiles(folderId, Optional.of(SortField.NAME), Optional.of(SortDirection.ASC));
 
-        ResponseEntity result = fileController.listFiles(folderId);
+        ResponseEntity result = fileController.listFiles(folderId, Optional.of(SortField.NAME), Optional.of(SortDirection.ASC));
 
         assertEquals(files, ((FileListDto) Objects.requireNonNull(result.getBody())).getItems());
         assertEquals(files.size(), ((FileListDto)result.getBody()).getCount());
@@ -262,9 +264,9 @@ class FileControllerTest {
         UUID folderId = UUID.randomUUID();
         InvalidFolderException exception = new InvalidFolderException();
 
-        doThrow(new InvalidFolderException()).when(fileService).listFiles(folderId);
+        doThrow(new InvalidFolderException()).when(fileService).listFiles(folderId, Optional.of(SortField.NAME), Optional.of(SortDirection.ASC));
 
-        ResponseEntity result = fileController.listFiles(folderId);
+        ResponseEntity result = fileController.listFiles(folderId, Optional.of(SortField.NAME), Optional.of(SortDirection.ASC));
 
         assertEquals(exception.getMessage(), ((InvalidFolderException) Objects.requireNonNull(result.getBody())).getMessage());
         assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());

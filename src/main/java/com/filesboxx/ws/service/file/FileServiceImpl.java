@@ -2,14 +2,14 @@ package com.filesboxx.ws.service.file;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.filesboxx.ws.controller.files.FilesMapper;
 import com.filesboxx.ws.controller.files.dto.*;
 import com.filesboxx.ws.exceptions.*;
+import com.filesboxx.ws.model.sort.SortDirection;
+import com.filesboxx.ws.model.sort.SortField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,7 +120,7 @@ public class FileServiceImpl implements FileService {
 		file.setDate(new Date());
 		file.setSize(convertToMB(forwarded.getSize()) + " MB");
 		File saved = fileRepo.save(file);
-		log.info("File " + saved.getName() + "entered!");
+		log.info("File " + saved.getName() + " entered!");
 		
 		BelongsFileFolder belongs = new BelongsFileFolder();
 		belongs.setFile(saved);
@@ -203,7 +203,7 @@ public class FileServiceImpl implements FileService {
 	}
 	
 	@Override
-	public FileListDto list(UUID userId) throws InvalidUserException {
+	public FileListDto list(UUID userId, Optional<SortField> sortBy, Optional<SortDirection> direction) throws InvalidUserException {
 		
 		log.info("Called GET method for getting files by user ID.");
 
@@ -223,12 +223,39 @@ public class FileServiceImpl implements FileService {
 		}
 		
 		log.info("Successfully executed GET method.");
-		
-		return FilesMapper.toFileListDto(list);
+
+		if (direction.isEmpty()) {
+			direction = Optional.of(SortDirection.ASC);
+		}
+
+		if (sortBy.isPresent() && sortBy.get().equals(SortField.DATE)
+			 && direction.get().equals(SortDirection.ASC)) {
+			return FilesMapper.toFileListDto(list.stream()
+					.sorted(Comparator.comparing(File::getDate))
+					.collect(Collectors.toList()));
+		} else if (sortBy.isPresent() && sortBy.get().equals(SortField.DATE)
+				&& direction.get().equals(SortDirection.DESC)) {
+			return FilesMapper.toFileListDto(list.stream()
+					.sorted(Comparator.comparing(File::getDate).reversed())
+					.collect(Collectors.toList()));
+		} else if (sortBy.isPresent() && sortBy.get().equals(SortField.NAME)
+			 && direction.get().equals(SortDirection.ASC)) {
+			return FilesMapper.toFileListDto(list.stream()
+					.sorted(Comparator.comparing(File::getName))
+					.collect(Collectors.toList()));
+		} else if (sortBy.isPresent() && sortBy.get().equals(SortField.NAME)
+				&& direction.get().equals(SortDirection.DESC)) {
+			return FilesMapper.toFileListDto(list.stream()
+					.sorted(Comparator.comparing(File::getName).reversed())
+					.collect(Collectors.toList()));
+		} else {
+			return FilesMapper.toFileListDto(list);
+		}
+
 	}
 	
 	@Override
-	public FileListDto listFiles(UUID folderId) throws InvalidFolderException {
+	public FileListDto listFiles(UUID folderId, Optional<SortField> sortBy, Optional<SortDirection> direction) throws InvalidFolderException {
 		
 		log.info("Called GET method for getting files from folder by folder ID.");
 
@@ -246,8 +273,35 @@ public class FileServiceImpl implements FileService {
 		}
 		
 		log.info("Method for getting files executed.");
-		
-		return FilesMapper.toFileListDto(list);
+
+		if (direction.isEmpty()) {
+			direction = Optional.of(SortDirection.ASC);
+		}
+
+		if (sortBy.isPresent() && sortBy.get().equals(SortField.DATE)
+				&& direction.get().equals(SortDirection.ASC)) {
+			return FilesMapper.toFileListDto(list.stream()
+					.sorted(Comparator.comparing(File::getDate))
+					.collect(Collectors.toList()));
+		} else if (sortBy.isPresent() && sortBy.get().equals(SortField.DATE)
+				&& direction.get().equals(SortDirection.DESC)) {
+			return FilesMapper.toFileListDto(list.stream()
+					.sorted(Comparator.comparing(File::getDate).reversed())
+					.collect(Collectors.toList()));
+		} else if (sortBy.isPresent() && sortBy.get().equals(SortField.NAME)
+				&& direction.get().equals(SortDirection.ASC)) {
+			return FilesMapper.toFileListDto(list.stream()
+					.sorted(Comparator.comparing(File::getName))
+					.collect(Collectors.toList()));
+		} else if (sortBy.isPresent() && sortBy.get().equals(SortField.NAME)
+				&& direction.get().equals(SortDirection.DESC)) {
+			return FilesMapper.toFileListDto(list.stream()
+					.sorted(Comparator.comparing(File::getName).reversed())
+					.collect(Collectors.toList()));
+		} else {
+			return FilesMapper.toFileListDto(list);
+		}
+
 	}
 
 	@Override

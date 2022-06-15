@@ -1,9 +1,12 @@
 package com.filesboxx.ws.controller.files;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import com.filesboxx.ws.controller.files.dto.*;
 import com.filesboxx.ws.exceptions.*;
+import com.filesboxx.ws.model.sort.SortDirection;
+import com.filesboxx.ws.model.sort.SortField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -105,10 +108,12 @@ public class FileController {
 	})
 	@GetMapping(value = "/{userId}")
 	public ResponseEntity list (
-			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable UUID userId) {
+			@ApiParam(value = "Value representing the unique user identificator.", required = true) @PathVariable UUID userId,
+			@ApiParam(value = "Value representing sorting field.", allowableValues = "NAME, DATE") @RequestParam (name = "sort-by") Optional<SortField> sortField,
+			@ApiParam(value = "Value representing sort direction", allowableValues = "ASC, DESC") @RequestParam (name = "sort-direction") Optional<SortDirection> sortDirection) {
 
 		try {
-			FileListDto files = fileService.list(userId);
+			FileListDto files = fileService.list(userId, sortField, sortDirection);
 			return new ResponseEntity(files, HttpStatus.OK);
 		} catch (InvalidUserException exception) {
 			return new ResponseEntity(exception, InvalidUserException.HTTP_STATUS);
@@ -123,10 +128,12 @@ public class FileController {
 	})
 	@GetMapping(value = "/folder/{folderId}")
 	public ResponseEntity listFiles (
-			@ApiParam(value = "Value representing the unique folder identificator.", required = true) @PathVariable UUID folderId) {
+			@ApiParam(value = "Value representing the unique folder identificator.", required = true) @PathVariable UUID folderId,
+			@ApiParam(value = "Value representing sorting field.", allowableValues = "NAME, DATE") @RequestParam (name = "sort-by") Optional<SortField> sortField,
+			@ApiParam(value = "Value representing sort direction", allowableValues = "ASC, DESC") @RequestParam (name = "sort-direction") Optional<SortDirection> sortDirection) {
 
 		try {
-			FileListDto files = fileService.listFiles(folderId);
+			FileListDto files = fileService.listFiles(folderId, sortField, sortDirection);
 			return new ResponseEntity(files, HttpStatus.OK);
 		} catch (InvalidFolderException exception) {
 			return new ResponseEntity(exception, InvalidFolderException.HTTP_STATUS);

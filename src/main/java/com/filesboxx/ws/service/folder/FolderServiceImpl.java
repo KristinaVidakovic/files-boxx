@@ -1,9 +1,9 @@
 package com.filesboxx.ws.service.folder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import com.filesboxx.ws.controller.files.FilesMapper;
 import com.filesboxx.ws.controller.folder.FoldersMapper;
 import com.filesboxx.ws.controller.folder.dto.FolderCreateDto;
 import com.filesboxx.ws.controller.folder.dto.FolderDto;
@@ -11,6 +11,9 @@ import com.filesboxx.ws.controller.folder.dto.FolderListDto;
 import com.filesboxx.ws.exceptions.FolderExistsException;
 import com.filesboxx.ws.exceptions.InvalidFolderException;
 import com.filesboxx.ws.exceptions.InvalidUserException;
+import com.filesboxx.ws.model.file.File;
+import com.filesboxx.ws.model.sort.SortDirection;
+import com.filesboxx.ws.model.sort.SortField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +77,7 @@ public class FolderServiceImpl implements FolderService {
 	}
 	
 	@Override
-	public FolderListDto list(UUID userId) throws InvalidUserException {
+	public FolderListDto list(UUID userId, Optional<SortField> sortBy, Optional<SortDirection> direction) throws InvalidUserException {
 		
 		log.info("Called GET method for getting folders for forwarded user ID.");
 
@@ -94,8 +97,25 @@ public class FolderServiceImpl implements FolderService {
 		}
 		
 		log.info("Method for getting folders executed.");
-		
-		return FoldersMapper.toFolderListDto(list);
+
+		if (direction.isEmpty()) {
+			direction = Optional.of(SortDirection.ASC);
+		}
+
+		if (sortBy.isPresent() && sortBy.get().equals(SortField.NAME)
+				&& direction.get().equals(SortDirection.ASC)) {
+			return FoldersMapper.toFolderListDto(list.stream()
+					.sorted(Comparator.comparing(Folder::getName))
+					.collect(Collectors.toList()));
+		} else if (sortBy.isPresent() && sortBy.get().equals(SortField.NAME)
+				&& direction.get().equals(SortDirection.DESC)) {
+			return FoldersMapper.toFolderListDto(list.stream()
+					.sorted(Comparator.comparing(Folder::getName).reversed())
+					.collect(Collectors.toList()));
+		} else {
+			return FoldersMapper.toFolderListDto(list);
+		}
+
 	}
 
 	@Override
