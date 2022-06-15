@@ -22,8 +22,10 @@ public class FileDto {
     String name;
     @ApiModelProperty(example = "xlsx")
     String extension;
-    @ApiModelProperty(example = "date")
+    @ApiModelProperty(example = "2022-06-15T16:10:54.016+00:00")
     Date date;
+    @ApiModelProperty(example = "0.15 MB")
+    String size;
     @ApiModelProperty(example = "Forwarded data in bytes")
     byte[] data;
 

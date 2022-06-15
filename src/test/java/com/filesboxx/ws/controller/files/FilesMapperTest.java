@@ -29,6 +29,7 @@ class FilesMapperTest {
                 "File name",
                 "txt",
                 new Date(),
+                "126KB",
                 "Hello".getBytes());
 
         FileDto actual = FilesMapper.toFileDto(file);
@@ -48,6 +49,7 @@ class FilesMapperTest {
                 "File name",
                 "txt",
                 new Date(),
+                "126KB",
                 "Hello".getBytes());
         expected.add(dto);
 

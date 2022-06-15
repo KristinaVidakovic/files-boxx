@@ -41,6 +41,8 @@ public class File {
 	private byte[] data;
 	@Column(name = "DATE")
 	private Date date;
+	@Column(name = "SIZE")
+	private String size;
 	@Column(name = "DELETED")
 	private Boolean deleted;
 

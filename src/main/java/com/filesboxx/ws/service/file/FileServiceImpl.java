@@ -1,6 +1,7 @@
 package com.filesboxx.ws.service.file;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -74,6 +75,7 @@ public class FileServiceImpl implements FileService {
 		
 		file.setDeleted(false);
 		file.setDate(new Date());
+		file.setSize(convertToMB(forwarded.getSize()) + " MB");
 		File saved = fileRepo.save(file);
 
 		log.info("File " + saved.getName() + " entered!");
@@ -116,6 +118,7 @@ public class FileServiceImpl implements FileService {
 		
 		file.setDeleted(false);
 		file.setDate(new Date());
+		file.setSize(convertToMB(forwarded.getSize()) + " MB");
 		File saved = fileRepo.save(file);
 		log.info("File " + saved.getName() + "entered!");
 		
@@ -283,5 +286,11 @@ public class FileServiceImpl implements FileService {
 		message.setStatus(HttpStatus.OK);
 
 		return message;
+	}
+
+	private String convertToMB (Long bytes) {
+		DecimalFormat numberFormat = new DecimalFormat("0.00");
+		double MB = bytes*9.537*0.0000001;
+		return numberFormat.format(MB);
 	}
 }

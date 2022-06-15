@@ -41,6 +41,7 @@ class FileControllerTest {
                 "File name",
                 "txt",
                 new Date(),
+                "126KB",
                 "Hello".getBytes());
 
         doReturn(fileDto).when(fileService).save(file, userId);
@@ -76,6 +77,7 @@ class FileControllerTest {
                 "File name",
                 "txt",
                 new Date(),
+                "126KB",
                 "Hello".getBytes());
 
         doReturn(fileDto).when(fileService).saveFile(file, folderId);
@@ -202,6 +204,7 @@ class FileControllerTest {
                 "File name",
                 "txt",
                 new Date(),
+                "126KB",
                 "Hello".getBytes());
         files.add(fileDto);
         FileListDto dto = new FileListDto(1L, files);
@@ -239,6 +242,7 @@ class FileControllerTest {
                 "File name",
                 "txt",
                 new Date(),
+                "126KB",
                 "Hello".getBytes());
         files.add(fileDto);
         FileListDto dto = new FileListDto(1L, files);

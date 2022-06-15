@@ -19,7 +19,7 @@ public class FolderDto {
     UUID folderId;
     @ApiModelProperty(example = "New folder")
     String name;
-    @ApiModelProperty(example = "date")
+    @ApiModelProperty(example = "2022-06-15T16:10:54.016+00:00")
     Date date;
 
 }

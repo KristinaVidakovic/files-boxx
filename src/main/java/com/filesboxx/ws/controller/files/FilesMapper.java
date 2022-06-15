@@ -15,6 +15,7 @@ public class FilesMapper {
                 saved.getName(),
                 saved.getExtension(),
                 saved.getDate(),
+                saved.getSize(),
                 saved.getData());
     }
 
